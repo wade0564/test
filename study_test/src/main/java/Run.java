@@ -1,16 +1,25 @@
 
 import java.io.File;
+
 import javax.mail.Flags;
 import javax.mail.Store;
 import javax.mail.Folder;
+
 import java.util.Iterator;
+
 import javax.mail.Session;
 import javax.mail.Message;
 import javax.mail.URLName;
+
 import java.io.IOException;
+
 import javax.mail.UIDFolder;
 import javax.mail.FetchProfile;
+
+import cn.edu.ustc.wade.pojo.UIDStore;
+
 import com.sun.mail.pop3.POP3Folder;
+
 import javax.mail.MessagingException;
 
 public class Run

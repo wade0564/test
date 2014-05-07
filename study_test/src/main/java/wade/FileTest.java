@@ -14,8 +14,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.emc.prometheus.asupqueuing.util.Params;
-
+import cn.edu.ustc.wade.util.Params;
 import ch.qos.logback.core.joran.action.NewRuleAction;
 
 public class FileTest {
