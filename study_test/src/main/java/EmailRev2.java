@@ -31,18 +31,20 @@ public class EmailRev2 {
 		String password = "L9Cde!23Szaxc#23ske38nfsdD2";
 		String username = "corp/svc_dpadctosh/PDI.SUB.Parser@emc.com";
 		// String username = "corp/svc_dpadctosh";
-		String host = "CORPUSMX60C.corp.emc.com";
+//		String host = "CORPUSMX60C.corp.emc.com";
+		String host = "mx26a.corp.emc.com";
 		// String host = "email.emc.com";
 		String provider = "pop3";
-		// String provider = "imap";
+//		 String provider = "imap";
 		Session ss = Session.getInstance(props, null);
-//		 ss.setDebug(true);
+		 ss.setDebug(true);
 		Store store = ss.getStore(provider);
 		// store.connect(host, username, password);
 		store.connect(host, username, 
 				password);
 		// store.connect(host, "svc_dpadctosh@emc.com", password);
-		POP3Folder inbox = (POP3Folder) store.getFolder("INBOX");
+//		POP3Folder inbox = (POP3Folder) store.getFolder("INBOX");
+		 Folder inbox =   store.getFolder("INBOX");
 
 		// 打开文件夹，读取信息
 		inbox.open(Folder.READ_WRITE);
@@ -56,9 +58,9 @@ public class EmailRev2 {
 		System.out.println((end - start) / 1000 + "s");
 
 		start = System.currentTimeMillis();
-		for (int i = 0; i < messages.length; i++) {
-			System.out.println(inbox.getUID(messages[i]));
-		}
+//		for (int i = 0; i < messages.length; i++) {
+//			System.out.println(inbox.getUID(messages[i]));
+//		}
 		end = System.currentTimeMillis();
 		System.out.println((end - start) / 1000 + "s");
 		Calendar calendar = Calendar.getInstance();
