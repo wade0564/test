@@ -1,0 +1,18 @@
+[
+    {
+        "bugId":750,
+        "description":"Bug 73222- Hardware Access Error on Replacement Drive due to \"test_unit_ready\" Timed Out",
+        "fixedGA":null,
+        "fixedNonGA":null,
+        "remediation":{
+            "id":300,
+            "url":"https://my.datadomain.com/download/kb/all/Repalcement_Drive_Test_Unit_Ready_Times_Out.html",
+            "major":null,
+            "feature":null,
+            "maintenance":null,
+            "patchLevel":null
+        },
+        "matchedTimeStamp":"2013-03-14$2013-03-14,2013-03-14$2013-03-14,2013-03-14$2013-03-14,",
+        "genInfo":"GENERATED_ON=Mon May 20 18:52:53 PDT 2013,GENERATED_EPOCH_TIME=1324605634,TIME_ZONE=PST,VERSION=5.0.3.1-258793,SYSTEM_ID=1F41513895,SERVICE_TAG=1F41513895,MODEL_NO=DD890,HOSTNAME=dd890-26.datadomain.com,"
+    }
+]

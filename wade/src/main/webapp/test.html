@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<script src="jquery.js" type="text/javascript"></script>
+<script src="jquery.fileDownload.js" type="text/javascript"></script>
+<script src="sub.js" type="text/javascript"></script>
+<script type="text/javascript">
+	jQuery(function() {
+
+		$('#a').bind('click', test);
+		$('#get').bind('click', get);
+
+	});
+
+	function test() {
+		$.fileDownload("test/download").done(function() {
+			alert("success");
+		});
+		// 		$.fileDownload("test/download");
+	}
+
+	function get() {
+
+		// 		var sub= new Sub();
+		var sub = {};
+
+		sub.channel = null;
+		sub.location = "my house";
+		sub.sn = null;
+		sub.source = null;
+		sub.status = "PARSE_SUCCESS";
+		sub.subid = 1;
+		sub.username = null;
+		sub.location = 'my house';
+		$.ajax({
+			type : "post",
+			url : "test/get",
+			contentType : "application/json",
+
+			// 				data : sub,
+			data : JSON.stringify(sub),
+			success : function(data, status) {
+				console.log(JSON.stringify(data));
+			},
+			error : function(xhr) {
+				console.log("error");
+			}
+		});
+
+	}
+</script>
+</head>
+<body>
+
+	<button id="a">filedownload</button>
+	<br></br>
+	<button id="get">get</button>
+
+
+
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Pragma" content="no-cache">
+		<title>Support Central</title>
+		<!-- general css -->
+		<link href="stylesheets/lib/XCentralUI-2.0.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/redmond/jquery-ui-1.10.1.custom.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/pagination.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/jquery.multiselect.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/common.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/jquery.percentageloader-0.1.css" rel="stylesheet"/>
+		<link rel="shortcut icon" href="images/emc.ico"/>
+		<!-- specific css -->
+		<link href="stylesheets/page_css/symptom_def_page.css" rel="stylesheet" type="text/css" />
+
+		<!-- general js -->
+		<script type="text/javascript" src="javascripts/lib/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery-ui-1.10.1.custom.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.cookie.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.fileDownload.js"></script>
+		<script type="text/javascript" src="javascripts/lib/XCentralUI-2.0.js"></script>
+		<script type="text/javascript" src="javascripts/config.js"></script>
+		<script type="text/javascript" src="javascripts/lib/json2.js"></script>
+		<script type="text/javascript" src="javascripts/lib/pagination.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.multiselect.min.js"></script>
+		<script type="text/javascript" src="javascripts/global.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.percentageloader-0.1.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.percentageloader-0.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/services/progressUtil.js"></script>
+		<!-- specific js -->
+		<script type="text/javascript" src="javascripts/page_js/symptom_def_page.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.tmpl.js"></script>
+		<script type="text/javascript" src="javascripts/services/export_util.js"></script>
+	</head>
+	<body>
+		<div id="head"></div>
+		<div id="menu"></div>
+		<div id="content">
+			<div class="xui_url_dir">
+			    <div id="pager_setting">
+					<a id="export_symptom_definitions">Export Symptom Definitions</a>
+					Rows per page: <input type="text"/>
+				</div>
+				:: Subject Matter Expert &gt; Manage Symptom Definitions
+				
+				<div class="xui_clear"></div>
+			</div>
+			<div class="xui_title_bar">
+				<span style="float:left;margin-top:4px;">Add, Update or Remove Symptom Definition</span>
+			    <select id="sym_type">
+					<option value="pattern">Pattern-based symptoms</option>
+					<option value="comparison">Comparison-based symptoms</option>
+				</select> 
+				<img src="images/lookup.png" id="filter_symptom" />
+				<img src="images/plus.png" id="add_symptom"/>
+				<label for="def_show_all">Show All</label>
+				<input type="checkbox" id="def_show_all" autocomplete="off"/>
+				<div id="def_pagination" class="pagination"></div>
+				<div class="xui_clear"></div>
+			</div>
+			<div id="filter_board">
+				<table cellspacing="5">
+					<tr>
+						<td class="xui_hightened">Symptom ID: </td>
+						<td>
+							<select id="filter_id">
+							</select>
+						</td>
+						<td class="xui_hightened">Description: </td>
+						<td>
+							<input type="text" id="filter_description"/>
+						</td>
+						<td>
+							<a id="search_comparison" style="display:none;">Search</a>
+							<img src="images/up.png" style="display:none;" class="slide_up"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="xui_hightened">Symptom Data: </td>
+						<td>
+							<input type="text" id="filter_data" class="name_select" select-ids="" select-path="" all-level="4" current-level="0"/>
+						</td>
+						<td class="xui_hightened">Symptom Pattern: </td>
+						<td>
+							<input type="text" id="filter_pattern"/>
+						</td>
+						<td>
+							<a id="search_symptom">Search</a>
+							<img src="images/up.png" class="slide_up"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="xui_content_body">
+				<table class="xui_table" id="symptom_table">
+					<tr>
+						<th style="width:6%;" class="desc sortable" data-field="id">ID</th>
+						<th style="width:14%;" class="sortable" data-field="description">Description</th>		
+						<th style="width:64%;">
+							<div class="first_inner_row">
+								<div class="cell_data sortable" data-field="pattern.sourceTable.name">Symptom Data</div>
+								<div class="cell_pattern sortable" data-field="pattern.regex">Symptom Pattern</div>
+							</div>
+							<div class="second_inner_row">
+								<div class="cell_min">Min</div>
+								<div class="cell_max">Max</div>
+								<div class="cell_scope">Time Scope</div>
+							</div>
+						</th>		
+						<th style="width:16%;" class="sortable" data-field="bugNum">Operations</th>			
+					</tr>
+					<tr style="display:none;">
+						<td style="vertical-align:top;padding-top:10px;">
+							<span class="sym_id" title=""></span>
+							<input type="hidden" class="bugs_id" value="-1"/>
+							<input type="hidden" class="patternId" value="-1"/>
+							<input type="hidden" class="readVersion" value="-1"/>
+							<input type="hidden" class="updateVersion" value="-1"/>
+						</td>
+						<td style="vertical-align:top;padding-top:6px;position:relative;display:block;">
+							<textarea class="description_input" title="description of symptom"></textarea>
+							<input type="text" class="description_input" title="description of symptom"/>
+						</td>
+						<td>
+							<div class="first_inner_row">
+								<div class="cell_data">
+									<input type="text" class="name_select" title="symptom data" select-ids="" select-path="" all-level="4" current-level="0"/>
+								</div>
+							    <div class="cell_pattern">
+									<input type="text" class="pattern_input" title="symptom pattern" disabled="disabled"/>
+								</div>
+							</div>
+							<div class="second_inner_row">
+								<div class="cell_min">
+									<input type="text" class="min_input" title="minimum occurance" value="1"/>
+								</div>
+								<div class="cell_max">
+									<input type="text" class="max_input" title="maximum occurance"/>
+								</div>
+								<div class="cell_scope">
+									<input type="text" class="scope_input" title="time scope"/>
+									<select class="scope_select" title="time scope">
+										<option value="null">None</option>
+										<option value="seconds">Second(s)</option>
+										<option value="minutes">Minute(s)</option>
+										<option value="hours">Hour(s)</option>
+										<option value="days">Day(s)</option>
+									</select>
+								</div>
+							</div>
+							<div class="third_inner_row" style="display:none;">
+								<table>
+									<tr>
+										<th style="width:12%;">String</th>
+										<th style="width:72%;">Substitution</th>
+										<th style="width:18%;">Operations</th>
+									</tr>
+									<tr style="display:none;">
+										<td>
+											<input type="text" class="placeholder" title="Placeholder starts with $, e.g.$1"/>
+											<input type="hidden" class="placeholderId"/>
+										</td>
+										<td>
+											<select class="sub_type" title="substitution type">
+												<option value="reference">Reference</option>
+												<!-- <option value="variable">Variable</option>-->
+											</select>
+											<input type="text" class="sub_sym_id" title="symptom identifier"/>
+											<input type="text" class="sub_back_ref" title="regex backreference"/>
+											<input type="text" class="sub_var_name" title="variable name">
+											<input type="text" class="mapping" title="mapping" select-path="" select-ids="" all-level="4" current-level="0"/>
+										</td>
+										<td>
+										    <img src="images/plus.png" class="add_substitute"/>
+											<img src="images/minus.png" class="delete_substitute"/>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+						<td style="vertical-align:top;padding-top:8px;">
+							<img src="images/save1.png" class="save" title="save symptom"/>
+							<img src="images/minus.png" class="delete" title="delete symptom"/>
+							<img src="images/test.png" class="test" title="test symptom"/>
+							<img src="images/export.png" class="export" title="export symptom"/>
+							<img src="images/bug_icon2.png" class="bug" />
+							<div class="flag">0</div>
+							<a class="substitute">SUBSTITUTE</a>
+						</td>
+					</tr>
+				</table>
+				<table class="xui_table" id="comparison_table" style="display:none;">
+					<tr>
+						<th style="width:6%;" class="desc sortable" data-field="">ID</th>
+						<th style="width:14%;" class="sortable" data-field="">Description</th>		
+						<th style="width:64%;">
+							<div class="first_inner_row">
+								<div class="cell_operandA">Operand</div>
+								<div class="cell_operator">Operator</div>
+								<div class="cell_operandB">Operand</div>
+							</div>
+							<div class="second_inner_row">
+								<div class="cell_min">Min</div>
+								<div class="cell_max">Max</div>
+								<div class="cell_scope">Time Scope</div>
+							</div>
+						</th>		
+						<th style="width:16%;">Operations</th>			
+					</tr>
+					<tr style="display:none;">
+						<td style="vertical-align:top;padding-top:10px;">
+							<span class="sym_id" title=""></span>
+							<input type="hidden" class="bugs_id" value="-1"/>
+						</td>
+						<td style="vertical-align:top;padding-top:6px;position:relative;display:block;">
+							<textarea class="description_input" title="description of symptom"></textarea>
+							<input type="text" class="description_input" title="description of symptom"/>
+						</td>
+						<td>
+							<div class="first_inner_row">
+								<div class="cell_operandA">
+									<select class="op_type" title="operand type">
+										<option value="variable">Variable</option>
+										<option value="reference">Reference</option>
+										<option value="value">Value</option>
+									</select>
+									<input type="text" class="var_select" title="variable name" select-ids="" select-path="" all-level="4" current-level="0"/>
+									<input type="text" class="var_calculation" title="calculation" select-path="" select-ids="" all-level="4" current-level="0"/>
+									<input type="text" class="value_operand" title="value"/>
+									<input type="text" class="ref_sym_id" title="symptom identifier"/>
+									<input type="text" class="ref_regex" title="regex backreference"/>
+								</div>
+								<div class="cell_operator">
+									<select class="operator">
+										<option value=">=">&gt;=</option>
+										<option value="<=">&lt;=</option>
+										<option value="=">=</option>
+										<option value=">">&gt;</option>
+										<option value="<">&lt;</option>
+									</select>
+								</div>
+								<div class="cell_operandB">
+									<select class="op_type" title="operand type">
+										<option value="variable">Variable</option>
+										<option value="reference">Reference</option>
+										<option value="value">Value</option>
+									</select>
+									<input type="text" class="var_select" title="variable name" select-ids="" select-path="" all-level="4" current-level="0"/>
+									<input type="text" class="var_calculation" title="calculation" select-path="" select-ids="" all-level="4" current-level="0"/>
+									<input type="text" class="value_operand" title="value"/>
+									<input type="text" class="ref_sym_id" title="symptom identifier"/>
+									<input type="text" class="ref_regex" title="regex backreference"/>
+								</div>
+							</div>
+							<div class="second_inner_row">
+								<div class="cell_min">
+									<input type="text" class="min_input" title="minimum occurance" value="1"/>
+								</div>
+								<div class="cell_max">
+									<input type="text" class="max_input" title="maximum occurance"/>
+								</div>
+								<div class="cell_scope">
+									<input type="text" class="scope_input" title="time scope"/>
+									<select class="scope_select" title="time scope">
+										<option value="null">None</option>
+										<option value="seconds">Second(s)</option>
+										<option value="minutes">Minute(s)</option>
+										<option value="hours">Hour(s)</option>
+										<option value="days">Day(s)</option>
+									</select>
+								</div>
+							</div>
+						</td>
+						<td style="vertical-align:top;padding-top:8px;">
+							<img src="images/save1.png" class="save" title="save symptom"/>
+							<img src="images/minus.png" class="delete" title="delete symptom"/>
+							<img src="images/test.png" class="test" title="test symptom"/>
+							<img src="images/export.png" class="export_symptom" title="export symptom"/>
+							<img src="images/bug_icon2.png" class="bug" />
+							<div class="flag">0</div>
+						</td>
+					</tr>
+					<script id="comparisonBasedTemplate" type="text/x-jquery-tmpl">
+					<tr>
+						<td style="vertical-align:top;padding-top:10px;">
+							<span class="sym_id" title="">${symid}</span>
+						</td>
+						<td>
+							<textarea class="description_input" title="${description}">${description}</textarea>
+							<input type="text" class="description_input" title="${description}" value="${description}"/>
+						</td>
+						<td>
+							<div class="first_inner_row">
+								<div class="cell_operandA">
+									<select class="op_type" title="operand type">
+									{{if operandAType=="variable"}}           
+               							<option value="variable" selected>Variable</option>
+										<option value="reference">Reference</option>
+										<option value="value">Value</option>
+									{{/if}}
+         							{{if operandAType=="reference"}}
+										<option value="variable">Variable</option>
+										<option value="reference" selected>Reference</option>
+										<option value="value">Value</option>
+									{{/if}}
+									{{if operandAType=="value"}}
+										<option value="variable">Variable</option>
+										<option value="reference">Reference</option>
+										<option value="value" selected>Value</option>
+         						    {{/if}}
+									</select>
+									<input type="text" class="var_select" title="variable name" select-ids="${getSymptomDataIds(pattern.symptomDataPath)}" select-path="${getSymptomDataPath(pattern.symptomDataPath)}" all-level="4" current-level="${pattern.symptomDataPath.length}" value="${pattern.symptomDataPath[pattern.symptomDataPath.length-1].name}"/>
+									<input type="text" class="var_calculation" title="calculation" select-path="${getSymptomDataPath(pattern2.symptomDataPath)}" select-ids="${getSymptomDataIds(pattern2.symptomDataPath)}" all-level="4" current-level="${pattern2.symptomDataPath.length}" value="${pattern2.symptomDataPath[pattern2.symptomDataPath.length-1].name}"/>
+									<input type="text" class="value_operand" title="value" value="${valueOperandA}"/>
+									<input type="text" class="ref_sym_id" title="symptom identifier" value="${refSymIdA}"/>
+									<input type="text" class="ref_regex" title="regex backreference" value="${refRegexA}"/>
+								</div>
+								<div class="cell_operator">
+									<select class="operator">
+									{{if operator==">="}}
+               							<option value=">=" selected>&gt;=</option>
+										<option value="<=">&lt;=</option>
+										<option value="=">=</option>
+										<option value=">">&gt;</option>
+										<option value="<">&lt;</option>
+									{{/if}}
+									{{if operator=="<="}}           
+               							<option value=">=">&gt;=</option>
+										<option value="<=" selected>&lt;=</option>
+										<option value="=">=</option>
+										<option value=">">&gt;</option>
+										<option value="<">&lt;</option>
+									{{/if}}
+									{{if operator=="="}}           
+										<option value=">=">&gt;=</option>
+										<option value="<=" selected>&lt;=</option>
+										<option value="=" selected>=</option>
+										<option value=">">&gt;</option>
+										<option value="<">&lt;</option>
+									{{/if}}
+									{{if operator==">"}}
+										<option value=">=">&gt;=</option>
+										<option value="<=" selected>&lt;=</option>
+										<option value="=">=</option>
+										<option value=">" selected>&gt;</option>
+										<option value="<">&lt;</option>
+									{{/if}}
+									{{if operator=="<"}}
+										<option value=">=">&gt;=</option>
+										<option value="<=" selected>&lt;=</option>
+										<option value="=">=</option>
+										<option value=">">&gt;</option>
+										<option value="<" selected>&lt;</option>
+									{{/if}}
+									</select>
+								</div>
+								<div class="cell_operandB">
+									<select class="op_type" title="operand type">
+									{{if operandBType=="variable"}}           
+               							<option value="variable" selected>Variable</option>
+										<option value="reference">Reference</option>
+										<option value="value">Value</option>
+									{{/if}}
+         							{{if operandBType=="reference"}}
+										<option value="variable">Variable</option>
+										<option value="reference" selected>Reference</option>
+										<option value="value">Value</option>
+									{{/if}}
+									{{if operandBType=="value"}}
+										<option value="variable">Variable</option>
+										<option value="reference">Reference</option>
+										<option value="value" selected>Value</option>
+         						    {{/if}}
+									</select>
+									<input type="text" class="var_select" title="variable name" select-ids="${getSymptomDataIds(pattern3.symptomDataPath)}" select-path="${getSymptomDataPath(pattern3.symptomDataPath)}" all-level="4" current-level="${pattern3.symptomDataPath.length}" value="${pattern3.symptomDataPath[pattern3.symptomDataPath.length-1].name}"/>
+									<input type="text" class="var_calculation" title="calculation"select-ids="${getSymptomDataIds(pattern4.symptomDataPath)}" select-path="${getSymptomDataPath(pattern4.symptomDataPath)}" all-level="4" current-level="${pattern4.symptomDataPath.length}" value="${pattern4.symptomDataPath[pattern4.symptomDataPath.length-1].name}"/>
+									<input type="text" class="value_operand" title="value" value="${valueOperandB}"/>
+									<input type="text" class="ref_sym_id" title="symptom identifier" value="${refSymIdB}"/>
+									<input type="text" class="ref_regex" title="regex backreference" value="${refRegexB}"/>
+								</div>
+							</div>
+							<div class="second_inner_row">
+								<div class="cell_min">
+									<input type="text" class="min_input" title="minimum occurance" value="${minInput}"/>
+								</div>
+								<div class="cell_max">
+									<input type="text" class="max_input" title="maximum occurance" value="${maxInput}"/>
+								</div>
+								<div class="cell_scope">
+									<input type="text" class="scope_input" title="time scope" value="${scopeInput}"/>
+									<select class="scope_select" title="time scope">
+									{{if scopeSelect=="null"}}	
+										<option value="null" selected>None</option>
+										<option value="seconds">Second(s)</option>
+										<option value="minutes">Minute(s)</option>
+										<option value="hours">Hour(s)</option>
+										<option value="days">Day(s)</option>
+									{{/if}}
+									{{if scopeSelect=="seconds"}}	
+										<option value="null" selected>None</option>
+										<option value="seconds" selected>Second(s)</option>
+										<option value="minutes">Minute(s)</option>
+										<option value="hours">Hour(s)</option>
+										<option value="days">Day(s)</option>
+									{{/if}}
+									{{if scopeSelect=="minutes"}}	
+										<option value="null" selected>None</option>
+										<option value="seconds">Second(s)</option>
+										<option value="minutes" selected>Minute(s)</option>
+										<option value="hours">Hour(s)</option>
+										<option value="days">Day(s)</option>
+									{{/if}}
+									{{if scopeSelect=="hours"}}	
+										<option value="null" selected>None</option>
+										<option value="seconds">Second(s)</option>
+										<option value="minutes">Minute(s)</option>
+										<option value="hours" selected>Hour(s)</option>
+										<option value="days">Day(s)</option>
+									{{/if}}
+									{{if scopeInput=="days"}}	
+										<option value="null" selected>None</option>
+										<option value="seconds">Second(s)</option>
+										<option value="minutes">Minute(s)</option>
+										<option value="hours">Hour(s)</option>
+										<option value="days" selected>Day(s)</option>
+									{{/if}}
+									</select>
+								</div>
+							</div>
+						</td>
+						<td style="vertical-align:top;padding-top:8px;">
+							<img src="images/save1.png" class="save" title="save symptom"/>
+							<img src="images/minus.png" class="delete" title="delete symptom"/>
+							<img src="images/test.png" class="test" title="test symptom"/>
+							<img src="images/export.png" class="export_symptom" title="export symptom"/>
+							{{if bugNum==0}}
+							<img src="images/bug_icon2.png" class="bug" title="This symptom has not been referenced by any bug."/>
+							{{else}}
+							<img src="images/bug_icon1.png" class="bug enable" title="This symptom is referenced by ${bugNum} bugs. ID of these bugs are: ${bugs}. Click for details. "/>
+							{{/if}}
+						</td>
+					</tr>
+					</script>
+				</table>
+			</div>
+		</div>
+		<div id="foot">
+		</div>
+		<div id="tooltip"></div>
+		<img src="images/loading.gif" id="selection_loading"/>
+		<div id="test_result" style="display:none;">
+			<p>
+				<span id="pre_percentage"></span>% data is pre-scanned. <span id="test_count"></span> machines are found.<br/><br/>Here is one example:
+				<br/><br/>
+			</p>
+			<p id="matched_title"></p>
+			<div id="matched_examples">
+				<table id="bug_test_result"></table>
+			</div>
+		</div>
+	</body>
+</html>

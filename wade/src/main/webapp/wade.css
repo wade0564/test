@@ -1,0 +1,51 @@
+img
+{
+width:20px;
+height:20px;
+background:url(images/parenthesis.png) no-repeat;
+}
+/* .left_parenthesis{ */
+/* 	zoom:1; */
+/* 	display:inline-block; */
+/* } */
+
+.left_parenthesis[num='0']
+{
+	background-position: -0 0;
+}
+.left_parenthesis[num='1']
+{
+	background-position: -20px 0;
+}
+.left_parenthesis[num='2']
+{
+	background-position: -40px 0;
+}
+.left_parenthesis[num='3']
+{
+	background-position: -60px 0;
+}
+.left_parenthesis,.left_parenthesis[num='4']
+{
+	background-position: -80px 0;
+}
+.right_parenthesis,.right_parenthesis[num='0']
+{
+	background-position: 0 -20px;
+}
+.right_parenthesis[num='1']
+{
+	background-position: -80px -20px;
+}
+.right_parenthesis[num='2']
+{
+	background-position: -60px -20px;
+}
+.right_parenthesis[num='3']
+{
+	background-position: -40px -20px;
+}
+.right_parenthesis,.right_parenthesis[num='4']
+{
+	background-position: -20px -20px;
+}

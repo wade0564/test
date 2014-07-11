@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Pragma" content="no-cache">
+		<title>Support Central</title>
+		<!-- general css -->
+		<link href="stylesheets/lib/XCentralUI-2.0.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/redmond/jquery-ui-1.10.1.custom.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/pagination.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/common.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/jquery.multiselect.css" rel="stylesheet" type="text/css" />
+		<link rel="shortcut icon" href="images/emc.ico"/>
+		<!-- specific css -->
+		<link href="stylesheets/page_css/sub_query_page.css" rel="stylesheet" type="text/css" />
+		<!-- general js -->
+		<script type="text/javascript" src="javascripts/lib/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery-migrate-1.2.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery-ui-1.10.1.custom.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.cookie.js"></script>
+		<script type="text/javascript" src="javascripts/lib/XCentralUI-2.0.js"></script>
+		<script type="text/javascript" src="javascripts/config.js"></script>
+		<script type="text/javascript" src="javascripts/lib/json2.js"></script>
+		<script type="text/javascript" src="javascripts/global.js"></script>
+		<script type="text/javascript" src="javascripts/lib/pagination.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.multiselect.min.js"></script>
+		<!-- specific js -->
+		
+		<script type="text/javascript" src="javascripts/page_js/query_sub.js"></script>
+		<script type="text/javascript" src="javascripts/model_js/sub.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.tmpl.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.mockjax.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.mockjson.js"></script>
+		<script type="text/javascript" src="javascripts/mock_data.js"></script>
+
+	<body>
+		<div id="head">
+		</div>
+		<div id="menu">
+		</div>
+		
+		<div id="content">
+			<div class="xui_url_dir">
+				<div id="pager_setting">
+					Rows per page: <input type="text"/>
+				</div>
+				:: Customer Support &gt; Query Symptom Data Status
+				<div class="xui_clear"></div>
+			</div>
+			<div class="xui_title_bar">
+				<div style="float:left;margin-top:2px;">
+					Search:
+				</div>
+				<label for="show_all">Show All</label>
+			    <input type="checkbox" id="show_all" autocomplete="off"/>
+				<div id="pagination" class="pagination"></div>
+			</div>
+			
+			<div class="xui_content_body">
+				<table id="filter_table" cellspacing="3">
+					<tr>
+						<td><span class="xui_hightened">Serial&nbsp;Number:</span></td>
+						<td><input type="text" id="serial_number_input" value="3FA1741815"/></td>
+						<td><span class="xui_hightened">Type:</span></td>
+						<td>
+							<select id="filter_type" multiple="multiple">
+								<option value="SUB">&nbsp;&nbsp;&nbsp;SUB File</option>
+								<option value="ASUP">&nbsp;&nbsp;&nbsp;ASUP File</option>
+							</select>
+						</td>
+						<td><span class="xui_hightened">Query&nbsp;From:</span></td>
+						<td><input type="text" id="date" data-role="date"/></td>
+						<td><img src="images/loadingPage.gif" id="search_loading"/></td>
+						<td><a id="search_sub_status" data-role="button">Search</a></td>
+					</tr>
+				</table>
+			</div>
+			
+				<div class="xui_title_bar">
+				<div class="sub_info_title">Symptom Data Information</div>
+			</div>
+			
+			<div class="">
+				<table id="sub_table" class="xui_table">
+				<thead>
+					<tr class="sub_info">
+						<th class="asc" data-field="sub_id">ID</th>
+						<th data-field="timestamp">Timestamp</th>
+						<th>Location</th>
+						<th>Type</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tr class="sub_info" style="display:none"><td></td></tr>
+				<tr class="" style="display:none"><td></td></tr>
+				 <script id="subToAddTemplate" type="text/x-jquery-tmpl">
+					<tr class="sub_info" expanded="false" title="Click to expand the row to show detailed infomation.">
+						<td>
+							${item_id}
+						</td>
+						<td>
+							{{if type=="SUB"}}
+								${XUtil.timestampToString(ts,"-",":")}
+							{{else}}
+								${XUtil.timestampToString(ts,"-",":").substring(0,10)}
+							{{/if}}
+						</td>
+						<td>
+							<input class="subLocation" value=${location.substring(0,10).replace(/-/g,"/")+"/"+location+".gz"}></input>
+						</td>
+						<td>
+							${type}
+						</td>
+						<td>
+							${_getStatus(status)}
+						</td>
+					</tr>
+						{{if subContents}}
+							<tr class="subContent_info" style="display:none">
+							<td colspan="5">
+								<div>{{html _splitLocation(subContents)}}</div>
+							</td>
+							</tr>
+						{{else}}
+							<tr class="subContent_info" style="display:none">
+							<td colspan="5">
+							</td>
+							</tr>
+						{{/if}}
+							
+				</script>
+				
+				<tbody id="sub_table_body" >
+				
+				</tbody>
+				
+					
+				</table>
+			</div>
+				
+		</div>
+		
+		<div id="foot">
+		</div>
+	</body>
+</html>

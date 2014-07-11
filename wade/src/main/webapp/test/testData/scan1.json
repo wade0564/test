@@ -1,0 +1,161 @@
+[
+   {
+      "bugId":750,
+      "description":"Bug 73222- Hardware Access Error on Replacement Drive due to \"test_unit_ready\" Timed Out",
+      "fixedGA":null,
+      "fixedNonGA":null,
+      "remediation":{
+         "id":300,
+         "url":"https://my.datadomain.com/download/kb/all/Repalcement_Drive_Test_Unit_Ready_Times_Out.html",
+         "major":null,
+         "feature":null,
+         "maintenance":null,
+         "patchLevel":null
+      },
+      "matchedTimeStamp":[
+         {
+            "start":"Mon May 20 18:52:53 PDT 2013",
+            "end":"Mon May 20 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line","third line"]
+         },
+         {
+            "start":"Tue May 21 18:52:53 PDT 2013",
+            "end":"Tue May 21 18:52:53 PDT 2013",
+            "bugLogs":["first line"]
+         },
+         {
+            "start":"Mon May 20 18:52:53 PDT 2013",
+            "end":"Mon May 20 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line"]
+         }
+      ],
+      "genInfo":[
+         {
+            "generated_ON":"Mon May 20 18:52:53 PDT 2013",
+            "generated_EPOCH_TIME":"1324605634",
+            "time_ZONE":"PST",
+            "version":"5.0.3.1-258793",
+            "system_ID":"1F41513895",
+            "service_TAG":"1F41513895",
+            "model_NO":"DD890",
+            "hostname":"dd890-26.datadomain.com"
+         },
+         {
+            "generated_ON":"Tue May 21 18:52:53 PDT 2013",
+            "generated_EPOCH_TIME":"1324605634",
+            "time_ZONE":"PST",
+            "version":"5.0.3.1-258793",
+            "system_ID":"1F41513895",
+            "service_TAG":"1F41513895",
+            "model_NO":"DD890",
+            "hostname":"dd890-26.datadomain.com"
+         }
+      ]
+   },
+   {
+      "bugId":752,
+      "description":"Bug 73222- Hardware Access Error on Replacement Drive due to \"test_unit_ready\" Timed Out",
+      "fixedGA":null,
+      "fixedNonGA":null,
+      "remediation":{
+         "id":300,
+         "url":"https://my.datadomain.com/download/kb/all/Repalcement_Drive_Test_Unit_Ready_Times_Out.html",
+         "major":null,
+         "feature":null,
+         "maintenance":null,
+         "patchLevel":null
+      },
+      "matchedTimeStamp":[
+         {
+            "start":"Mon May 20 18:52:53 PDT 2013",
+            "end":"Mon May 20 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line","third line"]
+         },
+         {
+            "start":"Tue May 21 18:52:53 PDT 2013",
+            "end":"Tue May 21 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line","third line"]
+         },
+         {
+            "start":"Mon May 20 18:52:53 PDT 2013",
+            "end":"Mon May 20 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line","third line"]
+         }
+      ],
+      "genInfo":[
+         {
+            "generated_ON":"Mon May 20 18:52:53 PDT 2013",
+            "generated_EPOCH_TIME":"1324605634",
+            "time_ZONE":"PST",
+            "version":"5.0.3.1-258793",
+            "system_ID":"1F41513895",
+            "service_TAG":"1F41513895",
+            "model_NO":"DD890",
+            "hostname":"dd890-26.datadomain.com"
+         },
+         {
+            "generated_ON":"Mon May 20 18:52:53 PDT 2013",
+            "generated_EPOCH_TIME":"1324605634",
+            "time_ZONE":"PST",
+            "version":"5.0.3.1-258793",
+            "system_ID":"1F41513895",
+            "service_TAG":"1F41513895",
+            "model_NO":"DD890",
+            "hostname":"dd890-26.datadomain.com"
+         }
+      ]
+   },
+   {
+      "bugId":751,
+      "description":"Bug 73222- Hardware Access Error on Replacement Drive due to \"test_unit_ready\" Timed Out",
+      "fixedGA":null,
+      "fixedNonGA":null,
+      "remediation":{
+         "id":300,
+         "url":"https://my.datadomain.com/download/kb/all/Repalcement_Drive_Test_Unit_Ready_Times_Out.html",
+         "major":null,
+         "feature":null,
+         "maintenance":null,
+         "patchLevel":null
+      },
+      "matchedTimeStamp":[
+         {
+            "start":"Mon May 20 18:52:53 PDT 2013",
+            "end":"Mon May 20 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line","third line"]
+         },
+         {
+            "start":"Tue May 21 18:52:53 PDT 2013",
+            "end":"Tue May 21 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line","third line"]
+         },
+         {
+            "start":"Thu May 22 18:52:53 PDT 2013",
+            "end":"Thu May 22 18:52:53 PDT 2013",
+            "bugLogs":["first line","second line","third line"]
+         }
+      ],
+      "genInfo":[
+         {
+            "generated_ON":"Mon May 20 18:52:53 PDT 2013",
+            "generated_EPOCH_TIME":"1324605634",
+            "time_ZONE":"PST",
+            "version":"5.0.3.1-258793",
+            "system_ID":"1F41513895",
+            "service_TAG":"1F41513895",
+            "model_NO":"DD890",
+            "hostname":"dd890-26.datadomain.com"
+         },
+         {
+            "generated_ON":"Mon May 20 18:52:53 PDT 2013",
+            "generated_EPOCH_TIME":"1324605634",
+            "time_ZONE":"PST",
+            "version":"5.0.3.1-258793",
+            "system_ID":"1F41513895",
+            "service_TAG":"1F41513895",
+            "model_NO":"DD890",
+            "hostname":"dd890-26.datadomain.com"
+         }
+      ]
+   }
+]

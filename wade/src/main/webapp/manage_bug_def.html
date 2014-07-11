@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Pragma" content="no-cache">
+		<title>Support Central</title>
+		<!-- general css -->
+		<link href="stylesheets/lib/XCentralUI-2.0.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/redmond/jquery-ui-1.10.1.custom.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/pagination.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/common.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/jquery.percentageloader-0.1.css" rel="stylesheet"/>
+		<link rel="shortcut icon" href="images/emc.ico"/>
+		<!-- specific css -->
+		<link href="stylesheets/page_css/bug_def_page.css" rel="stylesheet" type="text/css" />
+
+		<!-- general js -->
+		<script type="text/javascript" src="javascripts/lib/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery-migrate-1.2.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery-ui-1.10.1.custom.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.fileDownload.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.cookie.js"></script>
+		<script type="text/javascript" src="javascripts/lib/XCentralUI-2.0.js"></script>
+		<script type="text/javascript" src="javascripts/config.js"></script>
+		<script type="text/javascript" src="javascripts/lib/json2.js"></script>
+		<script type="text/javascript" src="javascripts/lib/pagination.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.jstree.js"></script>
+		<script type="text/javascript" src="javascripts/global.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.percentageloader-0.1.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.percentageloader-0.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/services/progressUtil.js"></script>
+		<!-- specific js -->
+		<script type="text/javascript" src="javascripts/services/bug_util.js"></script>
+		<script type="text/javascript" src="javascripts/page_js/bug_def_page.js"></script>
+		<script type="text/javascript" src="javascripts/page_js/bug_def_page_option.js"></script>
+		<script type="text/javascript" src="javascripts/model_js/bug.js"></script>
+		<script type="text/javascript" src="javascripts/model_js/user_role.js"></script>
+		<script type="text/javascript" src="javascripts/services/autoHeightTextarea.js"></script>
+		<script type="text/javascript" src="javascripts/services/export_util.js"></script>
+		
+	</head>
+	<body>
+		<div id="head">
+		</div>
+		<div id="menu">
+		</div>
+		<div id="content">
+			<div class="xui_url_dir">
+				<div id="pager_setting">
+					Rows per page: <input type="text"/>
+				</div>
+				:: Subject Matter Expert &gt; Manage Bug Definitions				
+				<div class="xui_clear"></div>
+			</div>
+			<div class="xui_title_bar">
+				<div style="float:left;margin-top:2px;">
+					Product: <select id="product_select"></select>
+					Selected <span id="selected_bug_num">0</span> of <span id="all_bug_num">0</span> Bugs
+					(<span id="selected_bug_percent">0%</span>)
+				</div>
+				<a id="export_bug_matches">Export</a>
+				<!-- <a id="export_bug_definitions">Export Bug Defintions</a> -->
+				
+			</div>
+			<div class="xui_content_body">
+				<table>
+					<tr>
+						<td colspan="2"><span class="xui_hightened">Applies To:</span></td>
+						<td colspan="2"><span class="xui_hightened">Bug Filters:</span></td>
+						<td><span class="xui_hightened">Match:</span></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Hardware:</td>
+						<td>
+							<input type="text" class="hardware_tree_input"/>
+						</td>
+						<td>Domain:</td>
+						<td>
+							<select id="domain_select">
+								<option value="-1">--All--</option>
+							</select>
+						</td>
+						<td>Service Impact:</td>
+						<td>
+							<select id="impact_select">
+								<option value="-1">--All--</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Software:</td>
+						<td>
+							<input type="text" class="software_tree_input"/>
+						</td>
+						<td>Component:</td>
+						<td>
+							<select id="component_select">
+								<option value="-1">--All--</option>
+							</select>
+						</td>
+						<td>Lifecyle Status:</td>
+						<td>
+							<select id="lifecyle_select">
+								<option value="-1">--All--</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td>Bug ID:</td>
+						<td>
+							<select id="id_select">
+								<option value="-1">--All--</option>
+							</select>
+						</td>
+						<td><a id="reset_btn">Reset Fields</a></td>
+						<td><a id="manage_bug_btn">Manage Bug Definitions</a></td>
+					</tr>
+				</table>
+				<div id="software_tree_div">
+					<input type="radio" name="tree_radio" id="software_tree_select_all"/>
+					<label for="software_tree_select_all">Select All</label>
+					<input type="radio" name="tree_radio" id="software_tree_clear_all"/>
+					<label for="software_tree_clear_all">Clear All</label>
+					<div id="software_tree"></div>
+					<a id="software_tree_ok_btn">OK</a>
+				</div>
+				<div id="hardware_tree_div">
+					<input type="radio" name="tree_radio" id="hardware_tree_select_all"/>
+					<label for="hardware_tree_select_all">Select All</label>
+					<input type="radio" name="tree_radio" id="hardware_tree_clear_all"/>
+					<label for="hardware_tree_clear_all">Clear All</label>
+					<div id="hardware_tree"></div>
+					<a id="hardware_tree_ok_btn">OK</a>
+				</div>
+			    <div class="xui_clear"></div>			    
+			</div>
+			<div class="xui_title_bar">
+			    <img src="images/plus.png" id="add_bug"/>
+				<label for="show_all">Show All</label>
+			    <input type="checkbox" id="show_all" autocomplete="off"/>
+				<div id="pagination" class="pagination"></div>
+				<div class="add_bug_title">
+				Add, Update or Remove Bug Definition
+				<a id="customize_layout">Customize Layout</a>
+				</div>
+			</div>
+			<div class="xui_content_body">
+				<div id="bug_edit_div">
+					<table cellspacing="8" style="width:900px;margin-left:auto;margin-right:auto;">
+					    <tr>
+							<td><p class="xui_hightened">Information</p></td>
+							<td><span>Description*: </span></td>
+							<td colspan="3"><input type="text" class="description_input"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Category: </span></td>
+							<td colspan="3"><input type="text" class="category_input"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Identification: </span></td>
+							<td colspan="3"><input type="text" class="bugzilla_input"/>
+							<input type="text" class="identification_link"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Remediation: </span></td>
+							<td colspan="3"><input type="text" class="kba_input"/>
+							<input type="text" class="remediation_link"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Domain*: </span></td>
+							<td><select class="domain"><option value="-1">--Select--</option></select></td>
+							<td><span>Component*: </span></td>
+							<td><select class="component"><option value="-1">--Select--</option></select></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Lifecycle Status: </span></td>
+							<td><select class="lifecycle"></select></td>
+							<td><span>Service Impact: </span></td>
+							<td><select class="impact"></select></td>
+						</tr>
+						<tr class="hidden">
+							<td></td>
+							<td><span>Bug Penetration: </span></td>
+							<!-- <td colspan="3"><textarea class="penetration_percentage autoHeightTextarea"></textarea></td> -->
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Dupes:</span>
+							<td colspan="3" class="dupes_input" width="420px" ></td>
+						</tr>
+						<tr>
+							<td><p class="xui_hightened">Applies To</p></td>
+							<td><span>Hardware*: </span></td>
+							<td colspan="3" ><input type="text" class="hardware_tree_input"/></td>
+						</tr>
+						<tr>	
+							<td></td>
+							<td><span>Software*: </span></td>
+							<td colspan="3"><input type="text" class="software_tree_input"/></td>
+						</tr>
+						<tr>
+							<td colspan="5"><p class="xui_hightened">Symptoms*</p></td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<img src="images/img_trans.gif" class="left_parenthesis left_parenthesis_0" num="0" title="left click to add parenthesis &#10;right click to remove parenthesis"  />
+								<div class="flag">0</div>
+								<!-- <input type="text" class="left_parent_num" value="0"/> -->
+								<input type="text" class="symptom_id"/>
+								<img src="images/img_trans.gif" class="right_parenthesis right_parenthesis_0" num="0" title="left click to add parenthesis &#10;right click to remove parenthesis"  />
+								<div class="flag">0</div>
+								<!-- <input type="text" class="right_parent_num" value="0"/> -->
+								<select class="symptom_op">
+									<option>AND</option>
+									<option>OR</option>
+									<option>XOR</option>
+									<option>THEN</option>
+									<option>ANDNOT</option>
+									<option>ORNOT</option>
+									<option>XORNOT</option>
+									<option>THENNOT</option>
+								</select>
+								<span style="margin-left:10px;">Scope:</span>
+								<select class="symptom_cmp">
+									<option value=">=">&gt;=</option>
+									<option value="<=">&lt;=</option>
+								</select>
+								<input type="text" class="scope_input"/>
+								<select class="symptom_unit">
+									<option value="second">Second(s)</option>
+									<option value="minute">Minute(s)</option>
+									<option value="hour">Hour(s)</option>
+								</select>
+								<img src="images/plus.png" class="add_symptom"/>
+								<img src="images/minus.png" class="delete_symptom"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id="option_board" class="hidden">
+				<p id="option_tip">
+					<b>Customize Page Layout:</b>
+					</br>
+					You can choose favorite attributes to be displayed in your screen.  Click “Save” to make the change permanently.
+				</p>
+				<table cellspacing="5">
+					<tr>
+						<td>
+							<input id="option1" type="checkbox" class="cbx_id" disabled="disabled">
+							<label for="option1" style="margin-right:40px">ID</label>
+						</td>
+						<td>
+							<input id="option2" type="checkbox" class="cbx_description" disabled="disabled">
+							<label for="option2">Description</label>
+						</td>
+						<td>
+							<input id="option3" type="checkbox" class="optional_category">
+							<label for="option3">Category</label>
+						</td>
+						<td>
+							<input id="option4" type="checkbox" class="optional_domain">
+							<label for="option4">Domain</label>
+						</td>
+						<td>
+							<input id="option5" type="checkbox" class="optional_component">
+							<label for="option5">Component</label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="option6" type="checkbox" class="optional_lifecycle"">
+							<label for="option6">Lifecycle</label>
+						</td>
+						<td>
+							<input id="option7" type="checkbox" class="optional_impact">
+							<label for="option7">Impact</label>
+						</td>
+						<td>
+							<input id="option8" type="checkbox" class="cbx_remediation" disabled="disabled">
+							<label for="option8">Remediation</label>
+						</td>
+						<td>
+							<input id="option9" type="checkbox" class="optional_penetration">
+							<label for="option9">Peneration</label>
+						</td>
+						<td>
+							<input id="option10" type="checkbox" class="cbx_operation" disabled="disabled">
+							<label for="option10">Operations</label>
+						</td>
+					</tr>
+					<tr>
+					</tr>
+				</table>
+				<div>
+				<img src="images/up.png" class="slide_up"/>
+				<a id="save_option">Save</a>
+				<a id="reset_option">Reset to Default</a>
+				</div>
+				</div>
+				<table id="bug_table" class="xui_table">
+					<tr>
+						<th class="desc sortable" data-field="bugzillaId">ID</th>
+						<th class="sortable" data-field="description">Description</th>
+						<th class="sortable" data-field="category.name">Category</th>
+						<th class="sortable" data-field="domain.name">Domain</th>
+						<th class="sortable" data-field="component.name">Component</th>
+						<th class="sortable" data-field="lifeCycleState.state">Lifecycle</th>
+ 						<th class="sortable" data-field="impact.description">Impact</th> 
+						<th class="sortable" data-field="remediation.kbaId">Remediation</th>
+						<th class="sortable" data-field="penetration">Penetration</th>
+						<th>Operations</th>
+					</tr>
+					<tr style="display:none;">
+						<td>
+							<a class="bugzilla_id" href="" target="_blank"></a>
+							<input type="hidden" class="bug_id"/>
+						</td>
+						<td>
+							<a class="bug_description" target="_blank"></a>
+						</td>
+						<td>
+							<span class="bug_category"></span>
+						</td>
+						<td>
+							<span class="bug_domain"></span>
+						</td>
+						<td>
+							<span class="bug_component"></span>
+						</td>
+						<td>
+							<span class="bug_lifecycle"></span>
+						</td>
+						<td>
+							<span class="bug_impact"></span>
+						</td>
+						<td>
+							<a href="" target="_blank" class="bug_remediation"></a>
+						</td>
+						<td>
+							<span class="bug_penetration"></span>
+						</td>
+						<td>
+							<img src="images/edit.png" class="edit_bug"/>							
+							<img src="images/minus.png" class="delete_bug"/>
+							<img src="images/test.png" class="test_bug"/>
+							<img src="images/export.png" class="export_bug"/>
+						</td>
+					</tr>
+				</table>
+				<div class="xui_clear"></div>			    
+			</div>
+		</div>
+		<div id="foot">
+		</div>
+	</body>
+</html>

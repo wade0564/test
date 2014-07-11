@@ -1,0 +1,31 @@
+/*CSS Reset*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,table{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;}
+fieldset,img{border:0}
+ol,ul{list-style:none}
+caption,th{text-align:left}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}
+textarea{resize:none;}
+
+/*Basic Settings*/
+input[type='text'],
+textarea{border:1px solid #888;padding:4px;}
+label{cursor:pointer;}
+input.x_error_field,tr.x_error_field,textarea.x_error_field{ background:#FFCCCC;}
+select.x_error_field{color:red;}
+td img,td input{vertical-align:middle;}
+
+
+/*UI Settings*/
+.xui_clear{clear:both;height:0px;}
+.xui_hightened{font-weight:bold;color:rgb(195,115,4);}
+.xui_title_bar{padding:5px 15px 5px 15px;font-weight:bold;font-size:10pt;background:#8EB6E6;}
+.xui_url_dir{margin-top:20px;padding:5px;font-weight:bold;font-size:10pt;}
+.xui_content_body{background:#DDD;font-size:10pt;padding:15px;}
+.xui_table{width:100%;border-collapse:separate;border-spacing:2px;}
+.xui_table > tbody > tr{background:#BBB;}
+*+html .xui_table tr{background:#BBB;}
+.xui_table th{background-color:#333;color:white;min-width:40px;text-align:center;}
+.xui_table td{text-align:center;}
+.xui_table input{padding:2px;}
+.xui_tree_div{position:absolute;border:2px solid #CCC;-webkit-box-shadow: 0 0 12px #111;-moz-box-shadow: 0 0 12px #111;box-shadow: 0 0 12px #111;z-index:999;display:none;width:250px;background:white;padding:10px;}
+.xui_tree_list{padding:10px;max-width:220px;max-height:200px;*width:220px;*height:180px;overflow:auto;border:1px solid #CCC;margin-bottom:10px;}

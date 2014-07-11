@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="wade.css">
+<script type="text/javascript" src="javascripts/lib/jquery-1.9.1.min.js"></script>
+<script type="text/javascript"
+	src="javascripts/lib/jquery.mockjax.min.js"></script>
+<script type="text/javascript" src="javascripts/lib/jquery.mockjson.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+
+		$.mockjax({
+			url : '/test',
+			status : 200,
+			responseTime : 750,
+			responseText : 'User Information'
+		});
+		
+		$("#test").on("click",function(){
+			$.ajax("/test").done(function(data){console.log(data)});
+		});
+
+		$(document).on("mousedown",
+				"img.left_parenthesis_*,img[class^=right_parenthesis_]",
+				function(event) {
+					switch (event.which) {
+					//left click
+					case 2:
+						$.ajax("/test", function(data) {
+							alert(data);
+						});
+						break;
+					}
+
+				});
+
+		$(".left_parenthesis,.right_parenthesis").bind("contextmenu",
+				function(e) {
+					return false;
+				})
+		$(".left_parenthesis,.right_parenthesis").mousedown(function(event) {
+
+			switch (event.which) {
+			//left click
+			case 1:
+				var num = parseInt($(this).attr("num")) + 1;
+				$(this).parent().find(".flag").html(num).show();
+				/* 				if (num >= 4) {
+				 $(this).parent().find(".flag").html(num).show();
+				 }
+				 */
+				$(this).attr("num", num);
+				break;
+			//right click
+			case 3:
+				var num = parseInt($(this).attr("num"));
+				if (num == 0) {
+					break;
+				}
+				num--;
+				if (num < 4) {
+					$(this).parent().find(".flag").html(num).hide();
+				} else {
+					$(this).parent().find(".flag").html(num);
+				}
+				$(this).attr("num", num);
+				break;
+
+			}
+		})
+	});
+</script>
+
+</head>
+
+<body>
+	<div>
+		<img src="images/img_trans.gif" class="left_parenthesis" num="1"
+			title="left click to add parenthesis &#10;right click to remove parenthesis">
+		<span class="flag"
+			style="display: none; font-family: Arial; font-size: 12px; vertical-align: top; color: red; margin-left: -5px; line-height: 0.7"></span>
+	</div>
+	<br>
+	<br>
+	<div>
+		<img src="images/img_trans.gif" class="right_parenthesis_5" num="0"><span
+			class="flag"
+			style="display: none; font-family: Arial; font-size: 12px; vertical-align: top; color: red; margin-left: -5px; line-height: 0.7"></span>
+	</div>
+	
+	<br>
+	<button id="test">test</button>
+</body>
+</html>

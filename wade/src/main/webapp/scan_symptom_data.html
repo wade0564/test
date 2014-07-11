@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Pragma" content="no-cache">
+		<title>Support Central</title>
+		<!-- general css -->
+		<link href="stylesheets/lib/XCentralUI-2.0.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/redmond/jquery-ui-1.10.1.custom.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/lib/pagination.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/common.css" rel="stylesheet" type="text/css" />
+		<link rel="shortcut icon" href="images/emc.ico"/>
+		<!-- specific css -->
+		<link href="stylesheets/page_css/scan_page.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/page_css/scan_symptom_page.css" rel="stylesheet" type="text/css" />
+		<!-- general js -->
+		<script type="text/javascript" src="javascripts/lib/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery-migrate-1.2.1.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery-ui-1.10.1.custom.min.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.cookie.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.fileDownload.js"></script>
+		<script type="text/javascript" src="javascripts/lib/XCentralUI-2.0.js"></script>
+		<script type="text/javascript" src="javascripts/config.js"></script>
+		<script type="text/javascript" src="javascripts/lib/json2.js"></script>
+		<script type="text/javascript" src="javascripts/lib/pagination.js"></script>
+		<script type="text/javascript" src="javascripts/lib/jquery.jstree.js"></script>
+		<script type="text/javascript" src="javascripts/global.js"></script>
+		<script type="text/javascript" src="javascripts/services/progressUtil.js"></script>
+		<!-- specific js -->
+		<script type="text/javascript" src="javascripts/services/bug_util.js"></script>
+		<script type="text/javascript" src="javascripts/model_js/bug.js"></script>
+		<script type="text/javascript" src="javascripts/page_js/scan_symptom_data.js"></script>
+		<script type="text/javascript" src="javascripts/page_js/scan_symptom_data_copy.js"></script>
+		<script type="text/javascript" src="javascripts/services/autoHeightTextarea.js"></script>
+		<script type="text/javascript" src="javascripts/services/export_util.js"></script>
+	</head>
+	<body>
+		<div id="head">
+		</div>
+		<div id="menu">
+		</div>
+		<div id="content">
+			<div class="xui_url_dir">
+				<div id="pager_setting">
+					Rows per page: <input type="text"/>
+				</div>
+				:: Customer Support &gt; Scan Symptom Data
+				<div class="xui_clear"></div>
+			</div>
+			<div class="xui_title_bar">
+			    <label for="show_all">Show All</label>
+			    <input type="checkbox" id="show_all" autocomplete="off"/>
+				<div id="pagination" class="pagination"></div>
+				<div style="float:left;margin-top:2px;">
+					Product:
+					<select>
+					</select>
+				</div>
+				<span id="software_span"></span>
+			</div>
+			<div class="xui_content_body">
+				<table id="filter_table" cellspacing="3">
+					<tr>
+						<td colspan="2"><span class="xui_hightened">Symptom Date:</span></td>
+						<td colspan="2"><span class="xui_hightened">Bug Filters:</span></td>
+						<td><span class="xui_hightened">Search:</span></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>From:</td>
+						<td>
+							<input type="text" id="date_from_input" data-role="date"/>
+						</td>
+						<td>Domain:</td>
+						<td>
+							<select class="domain_select">
+								<option value="-1">--All--</option>	
+							</select>
+						</td>
+						<td>Serial Number:</td>
+						<td><input type="text" id="serial_number_input"/></td>
+					</tr>
+					<tr>
+						<td>To:</td>
+						<td>
+							<input type="text" id="date_to_input" data-role="date"/>
+						</td>
+						<td>Component:</td>
+						<td>
+							<select class="component_select">
+								<option value="-1">--All--</option>	
+							</select>
+						</td>
+						<td>Case Number:</td>
+						<td><input type="text" id="case_number_input"/></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+						    <label for="no_date_check">Search from 2005 to now:</label>
+						    <input type="checkbox" id="no_date_check" style="margin-left:40px;"/>
+						</td>
+						<td>Bug ID:</td>
+						<td>
+							<select class="bug_select">
+								<option value="-1">--All--</option>	
+							</select>
+						</td>
+						<td><img src="images/loadingPage.gif" id="scan_loading"/></td>
+						<td><a id="scan_symptom" data-role="button">Scan Symptom Data</a></td>
+					</tr>					
+				</table>
+			    <div class="xui_clear"></div>
+			</div>
+			<div class="xui_title_bar">
+				<a id="copy_all">Show All</a>
+				<a id="export_system_bugs">Export</a>
+				<a id="skip_all">Cancel</a>
+				<div id="progress_bar">
+					<p><span>0%</span><img src="images/loadingPage.gif"/></p>
+				</div>
+			</div>
+			<div class="xui_content_body">
+				<table id="bug_table" class="xui_table">
+					<tr>
+						<th width="8%" class="desc" data-field="bugzillaId">Bug ID</th>
+						<th width="40%" data-field="description">Description</th>
+						<th>Fixed In (GA)</th>
+						<th>Fixed In (non-GA)</th>
+						<th data-field="remediation.kbaId">Remediation</th>
+						<th>Instances</th>
+						<th>Dates</th>
+					</tr>
+					<tr>
+						<td>
+							<a class="bug_id" target="_blank"></a>
+						</td>
+						<td>
+							<a class="bug_description" target="_blank"></a>
+						</td>
+						<td>
+							<select class="bug_ga"></select>
+						</td>
+						<td>
+							<select class="bug_no_ga"></select>
+						</td>
+						<td>
+							<a href="" class="remediation" target="_blank"></a>
+						</td>
+						<td>
+							<a class="copy_btn less"></a>
+						</td>
+						<td>
+							<a class="bug_dates">date</a>
+						</td>
+					</tr>
+				</table>
+				<div id="software_tree_div">
+					<input type="radio" name="tree_radio" id="software_tree_select_all"/>
+					<label for="software_tree_select_all">Select All</label>
+					<input type="radio" name="tree_radio" id="software_tree_clear_all"/>
+					<label for="software_tree_clear_all">Clear All</label>
+					<div id="software_tree"></div>
+					<a id="software_tree_ok_btn">OK</a>
+				</div>
+				<div id="hardware_tree_div">
+					<input type="radio" name="tree_radio" id="hardware_tree_select_all"/>
+					<label for="hardware_tree_select_all">Select All</label>
+					<input type="radio" name="tree_radio" id="hardware_tree_clear_all"/>
+					<label for="hardware_tree_clear_all">Clear All</label>
+					<div id="hardware_tree"></div>
+					<a id="hardware_tree_ok_btn">OK</a>
+				</div>
+			    <div class="xui_clear"></div>
+			</div>
+			<div id="bug_edit_div">
+					<table cellspacing="8"  style="width:900px;margin-left:auto;margin-right:auto;">
+					    <tr>
+							<td><p class="xui_hightened">Information</p></td>
+							<td><span>Description: </span></td>
+							<td colspan="3"><input type="text" class="description_input"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Category: </span></td>
+							<td colspan="3"><input type="text" class="category_input"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Identification: </span></td>
+							<td colspan="3"><input type="text" class="bugzilla_input"/>
+							<input type="text" class="identification_link"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Remediation: </span></td>
+							<td colspan="3"><input type="text" class="kba_input"/>
+							<input type="text" class="remediation_link"></input></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Domain: </span></td>
+							<td><select class="domain"><option value="-1">--All--</option></select></td>
+							<td><span>Component: </span></td>
+							<td><select class="component"><option value="-1">--All--</option></select></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Lifecycle Status: </span></td>
+							<td><select class="lifecycle"></select></td>
+							<td><span>Service Impact: </span></td>
+							<td><select class="impact"></select></td>
+						</tr>
+						<tr class="hidden">
+							<td></td>
+							<td><span>Bug Penetration: </span></td>
+							<td colspan="3"><textarea class="penetration_percentage autoHeightTextarea"></textarea></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><span>Dupes:</span>
+							<td colspan="3" class="dupes_input" width="420px" ></td>
+						</tr>
+						<tr>
+							<td><p class="xui_hightened">Applies To</p></td>
+							<td><span>Hardware: </span></td>
+							<td colspan="3"><input type="text" class="hardware_tree_input"/></td>
+						</tr>
+						<tr>	
+							<td></td>
+							<td><span>Software: </span></td>
+							<td colspan="3"><input type="text" class="software_tree_input"/></td>
+						</tr>
+						<tr>
+							<td colspan="5"><p class="xui_hightened">Symptoms</p></td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<img src="images/img_trans.gif" class="left_parenthesis left_parenthesis_0" num="0" data-status="false"/>
+								<div class="flag">0</div>
+								<input type="text" class="symptom_id"/>
+								<img src="images/img_trans.gif" class="right_parenthesis right_parenthesis_0" num="0" data-status="false"/>
+								<div class="flag">0</div>
+								<select class="symptom_op">
+									<option>AND</option>
+									<option>OR</option>
+									<option>XOR</option>
+									<option>THEN</option>
+									<option>ANDNOT</option>
+									<option>ORNOT</option>
+									<option>XORNOT</option>
+									<option>THENNOT</option>
+								</select>
+								<span style="margin-left:10px;">Scope:</span>
+								<select class="symptom_cmp">
+									<option value=">=">&gt;=</option>
+									<option value="<=">&lt;=</option>
+								</select>
+								<input type="text" class="scope_input"/>
+								<select class="symptom_unit">
+									<option value="second">Second(s)</option>
+									<option value="minute">Minute(s)</option>
+									<option value="hour">Hour(s)</option>
+								</select>
+								<img src="images/plus.png" class="add_symptom"/>
+								<img src="images/minus.png" class="delete_symptom"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+		</div>
+		<div id="foot">
+		</div>
+	</body>
+</html>

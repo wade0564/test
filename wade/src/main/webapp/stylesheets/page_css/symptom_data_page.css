@@ -1,0 +1,77 @@
+.xui_title_bar{
+	line-height:2;
+}
+
+.xui_content_body{
+	display:block;
+	min-height: 400px;
+	background-color: white;
+	border: 3px solid #DDDDDD;
+	border-top: 0;
+}
+
+#symptom_datas{
+	width:1000px;
+	margin: 0 auto;
+	
+}
+
+
+.sidebar{
+	min-width:300px;
+	max-width:300px;
+	float:left;
+	margin-right: -175px;
+	border-right:1px solid #ccc;
+	min-height:400px; 
+	max-height:400px;
+	padding:5px;
+	overflow:auto;
+	
+	}
+	
+.main{
+	max-width:640px;
+	float:left;
+	display:inline;
+	margin-left:190px;
+	padding:0px;	
+	font-size:10pt;
+}
+	
+.main table td, .main table th{
+	padding:2px;
+}
+
+select{
+	margin-left:0px;
+	width:170px;
+}
+
+input[type="text"]{
+	width:160px;
+	float:right;
+}
+	
+	
+#sd_path_info {
+	width:640px;
+	min-height:60px;
+	word-wrap:break-word;
+	
+}
+
+#sd_path  {
+	float: left;
+	font-weight: bold;
+	font-size: 14pt;
+	display: inline-block;
+	margin: 10px 10px 0 0;
+}
+	
+#add {
+	float:none; 
+	display:inline-block;
+	margin-top: 6px;
+}	
+	

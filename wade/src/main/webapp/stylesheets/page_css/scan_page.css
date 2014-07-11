@@ -1,0 +1,131 @@
+html{
+	overflow-y:scroll;
+}
+
+.xui_title_bar select{
+	margin-right:50px;
+}
+
+#pagination{
+	float:right;
+	margin-right:10px;
+	margin-top:1px;
+}
+
+#show_all{
+	float:right;
+	margin-right:5px;
+	margin-top:5px;
+	cursor:pointer;
+}
+
+.xui_title_bar label{
+	float:right;
+	font-weight:normal;
+}
+
+#copy_all, #export_system_bugs{
+	float:right;
+	margin-right:10px;
+	margin-top:-2px;
+	margin-left:20px;
+}
+
+.copy_btn{
+	height:25px;
+}
+
+#filter_table input[type='text']{
+	width : 150px;
+}
+
+#filter_table{
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.domain_select,.component_select,.bug_select{
+	width:200px;
+	height:25px;
+}
+
+#progress_bar{
+	width:400px;
+	height:24px;
+	float:right;
+	display:none;
+	position:relative;
+}
+
+#skip_all{
+	margin-top:-2.5px;
+	height:24px;
+	float:right;
+	margin-left:10px;
+	display:none;
+}
+
+#progress_bar span{
+	position:absolute;
+	font-size:11pt;
+	font-weight:normal;
+	right:200px;
+	line-height:24px;
+}
+
+#progress_bar img{
+	position:absolute;
+	height:22px;
+	right:150px;
+}
+.copy .detail {
+	padding-left: 55px;
+}
+
+.copy p {
+	margin: 15px 0;
+}
+
+#scan_loading{
+	display:none;
+	height:20px;
+	float:right;
+}
+
+.bug_description{
+	cursor:pointer
+}
+
+.more.less{
+	background:url("../../images/showMore.png") no-repeat scroll 0 0 transparent;
+}
+.less{
+	display:inline-block;
+	width:25px;
+	height:25px;
+	background:url("../../images/showLess.png") no-repeat scroll 0 0 transparent;
+}
+
+.bug_info_row{
+	
+}
+
+.xui_table > tbody > .bug_info_row{
+	background-color:white;
+}
+
+#software_span{
+	display:none;
+	margin-top:3px;
+	line-height:2;
+}
+
+.bug_ga,.bug_no_ga{
+	width:90%;
+}
+
+.add_symptom,.delete_symptom,.left_parenthesis,.right_parenthesis {
+	cursor: pointer;
+	margin-left: 5px;
+	margin-right: 5px;
+}

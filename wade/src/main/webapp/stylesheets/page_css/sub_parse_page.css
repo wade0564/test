@@ -1,0 +1,66 @@
+#show_all {
+	float: right;
+	margin-right: 5px;
+	margin-top: 6px;
+	cursor: pointer;
+}
+.xui_title_bar label {
+	float: right;
+	font-weight: normal;
+}
+
+#pagination {
+	float: right;
+	margin-right: 10px;
+	margin-top: 1px;
+}
+
+table {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.sub_info_title{
+	margin-top: 3px;
+	text-align:center;
+}
+
+.xui_table > tbody > tr.subContent_info{background:#CCC;}
+
+tr.subContent_info > td > ul {
+	list-style-type:square;
+	padding-left:20px;
+	font-size:15px;
+	font-family: Arial,Helvetica,sans-serif;
+	text-align:left;
+}
+
+
+
+#filter_table{
+	width:50%;
+}
+
+li,td.text_left{
+	text-align:left;
+}
+
+#parse_sub_btn{
+	margin-left: 20px;
+}
+
+#location{
+	width:60%;
+}
+#search_loading{
+/* 	margin-top:10px; */
+	visibility:hidden;
+	height:20px;
+	margin-left:20px;
+	vertical-align:sub;
+}
+.star{
+	color:red;
+	margin-left:8px;
+	margin-right:8px;
+}

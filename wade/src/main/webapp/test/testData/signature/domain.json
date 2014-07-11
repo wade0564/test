@@ -1,0 +1,70 @@
+[
+    {
+        "id":64,
+        "name":"Apps Integrations"
+    },
+    {
+        "id":65,
+        "name":"Archiver"
+    },
+    {
+        "id":61,
+        "name":"CIFS"
+    },
+    {
+        "id":57,
+        "name":"Compression"
+    },
+    {
+        "id":56,
+        "name":"Core System"
+    },
+    {
+        "id":58,
+        "name":"DDMC"
+    },
+    {
+        "id":53,
+        "name":"Filesystem"
+    },
+    {
+        "id":62,
+        "name":"Hardware"
+    },
+    {
+        "id":60,
+        "name":"Install/Upgrade/Config"
+    },
+    {
+        "id":51,
+        "name":"Networking"
+    },
+    {
+        "id":55,
+        "name":"NFS"
+    },
+    {
+        "id":54,
+        "name":"OST"
+    },
+    {
+        "id":50,
+        "name":"RAID/IO/Storage Layer"
+    },
+    {
+        "id":52,
+        "name":"Replication"
+    },
+    {
+        "id":59,
+        "name":"SNMP"
+    },
+    {
+        "id":63,
+        "name":"User Interface"
+    },
+    {
+        "id":66,
+        "name":"VTL/Gateway"
+    }
+]
