@@ -5,6 +5,9 @@ public class StringTest {
 	
 	public static void main(String[] args) {
 		
+		
+		System.out.println(true);
+		
 //		String s ="dddd\r";
 //		
 //		String s2 =s.trim();
@@ -15,12 +18,6 @@ public class StringTest {
 //		
 //		System.out.println(s2);
 		
-		String s1 = "/auto/support/ftpusers/EMC_csftp.tgz/swatibundle.tgz ";
-		String s2 = "/auto/support/ftpusers/EMC_csftp.tar.gz/swatibundle.tar.gz ";
-		String s = s1.replaceAll("(\\.tgz)|(\\.tar\\.gz)$", "/");
-		System.out.println(s);
-		s = s2.replaceAll("(\\.tgz)|(\\.tar\\.gz)$", "/");
-		System.out.println(s);
 	}
 	
 	

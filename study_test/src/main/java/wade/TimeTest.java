@@ -14,16 +14,34 @@ public class TimeTest {
 		int timeStamp =2;
 				
 		
-		System.out.println(time = time>timeStamp?time:timeStamp);
+		Long l= null;
+		long l2=1L;
+		if(l==l2)
+		{
+			System.out.println(1);
+		}
+		
+//		System.out.println(time = time>timeStamp?time:timeStamp);
 		
 		
 		
-		SimpleDateFormat sdf =new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-		Date date =sdf.parse("Thu Sep 26 06:00:01 CDT 2013");
-		System.out.println(date);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		System.out.println(sdf.format(date));
+//		SimpleDateFormat sdf =new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+//		Date date =sdf.parse("Thu Sep 26 06:00:01 CDT 2013");
+//		System.out.println(date);
 		
+		
+		String s ="Tue May 13 17:09:23 2014";
+		SimpleDateFormat sdf= new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
+		Date date =sdf.parse(s);
+//		sdf.setTimeZone(TimeZone.getTimeZone("CST"));
+//		System.out.println(sdf.format(date));
+		
+		
+//		
+//		for(int i=0;i<10;i++){
+//			
+//			System.out.println(System.nanoTime());
+//		}
 		
 		
 	}

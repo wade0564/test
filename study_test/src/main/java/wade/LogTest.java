@@ -2,6 +2,7 @@ package wade;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,11 @@ public class LogTest {
 //
 //		StatusPrinter.print(lc);
 		
-		System.out.println(System.currentTimeMillis());
-		log.info("merge Time :{}",new Date());
+//		System.out.println(System.currentTimeMillis());
+//		log.info("merge Time :{}",new Date());
+		
+		System.out.println(TimeUnit.MINUTES.toMillis(1));
+		System.out.println(TimeUnit.DAYS.toHours(1));
 
 	}
 
