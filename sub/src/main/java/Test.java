@@ -163,7 +163,7 @@ public class Test {
          }
          
          List<DdfsDedup.Range> prepareExistedList() {
-                   List<DdfsDedup.Range> existedDdfs = new ArrayList<>();
+                   List<DdfsDedup.Range> existedDdfs = new ArrayList<DdfsDedup.Range>();
                    
                    DdfsDedup.Range r1 = new DdfsDedup.Range();
                    r1.startTime = new Date(10000);r1.endTime = new Date(20000);
@@ -179,7 +179,7 @@ public class Test {
                    return existedDdfs;
          }
          
-         List<DdfsDedup.DdfsFragRange> newDdfsFrags = new ArrayList<>(); 
+         List<DdfsDedup.DdfsFragRange> newDdfsFrags = new ArrayList<DdfsDedup.DdfsFragRange>(); 
          Test prepareDdfsFragRangeList() {
                    newDdfsFrags.clear();
                    return this;
