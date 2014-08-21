@@ -1,0 +1,12 @@
+349  [main] WARN  wade.LogTest - This is wade first Log
+353  [main] INFO  wade.LogTest - merge Time :
+312  [main] WARN  wade.LogTest - This is wade first Log
+317  [main] INFO  wade.LogTest - merge Time :
+328  [main] WARN  wade.LogTest - This is wade first Log
+334  [main] INFO  wade.LogTest - merge Time :
+290  [main] WARN  wade.LogTest - This is wade first Log
+294  [main] INFO  wade.LogTest - merge Time :
+298  [main] WARN  wade.LogTest - This is wade first Log
+302  [main] INFO  wade.LogTest - merge Time :1392897874007
+296  [main] WARN  wade.LogTest - This is wade first Log
+304  [main] INFO  wade.LogTest - merge Time :Thu Feb 20 20:06:01 CST 2014
