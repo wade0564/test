@@ -57,14 +57,15 @@ public class GetTest {
 		
 		br.close();
 		
-	    Document document = Jsoup.parse(sb.toString());
+		System.out.println(sb.toString());
+//	    Document document = Jsoup.parse(sb.toString());
 	    
-	    Elements elementsByAttribute = document.getElementsByAttribute("href");
-	    
-	    for (Element element : elementsByAttribute) {
-			
-	    	System.out.println(element.text());
-		}
+//	    Elements elementsByAttribute = document.getElementsByAttribute("href");
+//	    
+//	    for (Element element : elementsByAttribute) {
+//			
+//	    	System.out.println(element.text());
+//		}
 		
 	}
 	
