@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.edu.ustc.wade.pojo.SubMessage;
 import cn.edu.ustc.wade.util.Params;
+import cn.edu.ustc.wade.util.PropertiesUtil;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -29,9 +30,10 @@ public class Consumer {
 
 	public Consumer() {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost(Params.RABBITMQ_HOSTNAME.getValue());
-		// factory.setUsername(Params.RABBITMQ_USERNAME.getValue());
-		// factory.setPassword(Params.RABBITMQ_PASSWORD.getValue());
+		factory.setHost(PropertiesUtil.getProperty("rabbitmq_hostname"));
+		 factory.setUsername(PropertiesUtil.getProperty("rabbitmq_username"));
+		 factory.setPassword(PropertiesUtil.getProperty("rabbitmq_password"));
+		 factory.setVirtualHost(PropertiesUtil.getProperty("rabbitmq_vhost"));
 		try {
 			connection = factory.newConnection();
 			channel = connection.createChannel();
@@ -43,13 +45,13 @@ public class Consumer {
 	public int getMessageWithoutAck(int maxCount)
 			throws ShutdownSignalException, ConsumerCancelledException,
 			IOException, InterruptedException {
-		return this.getMessage(false, maxCount);
+		return this.getMessage(true, maxCount);
 	}
 
 	private int getMessage(boolean autoAck, int maxCount) throws IOException,
 			ShutdownSignalException, ConsumerCancelledException,
 			InterruptedException {
-		channel.queueDeclare(Params.RABBITMQ_QUEUENAME.getValue(), false, false,
+		channel.queueDeclare(Params.RABBITMQ_QUEUENAME.getValue(), true, false,
 				false, null);
 
 		consumer = new QueueingConsumer(channel);
@@ -59,8 +61,8 @@ public class Consumer {
 
 		QueueingConsumer.Delivery delivery = consumer.nextDelivery();
 		
-		SubMessage msg = new Gson().fromJson(new String(delivery.getBody()), SubMessage.class); 
-		System.out.println(msg.getLocation());
+//		SubMessage msg = new Gson().fromJson(new String(delivery.getBody()), SubMessage.class); 
+		System.out.println(new String (delivery.getBody()));
 //		System.out.println(new String(delivery.getBody()));
 		
 		return 1;

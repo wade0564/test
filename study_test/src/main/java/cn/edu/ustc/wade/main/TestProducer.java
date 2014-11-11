@@ -21,14 +21,14 @@ public class TestProducer {
 
 		Producer p = new Producer();
 
-		SubMessage msg = new SubMessage();
-		msg.setDate(new Date());
-		msg.setLocation("/auto/support/uploads/map3/ddr/bundle/upload.1-support-bundle.tar.gz");
-		msg.setMD5("44ace6487b6eb15aae5b0e535e5b13f0");
-		msg.setSize(532015485);
+//		SubMessage msg = new SubMessage();
+//		msg.setDate(new Date());
+//		msg.setLocation("/auto/support/uploads/map3/ddr/bundle/upload.1-support-bundle.tar.gz");
+//		msg.setMD5("44ace6487b6eb15aae5b0e535e5b13f0");
+//		msg.setSize(532015485);
 		for (int i = 0; i < 10; i++){
-			msg.setMD5(i+"4ace6487b6eb15aae5b0e535e5b13f0");
-			p.publish(msg);
+//			msg.setMD5(i+"4ace6487b6eb15aae5b0e535e5b13f0");
+			p.publish("so cool !");
 		}
 
 		p.close();

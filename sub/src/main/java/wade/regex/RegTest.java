@@ -13,16 +13,24 @@ public class RegTest {
 //		  System.out.println(bo4);
 		  
 		  
-		  String md5 ="a6bdf045124d6199bfeeaba0a2c182df  /auto/support/uploads/morked/ddr/bundle/upload.26-support-bundle.tar.gz";
+//		  String md5 ="a6bdf045124d6199bfeeaba0a2c182df  /auto/support/uploads/morked/ddr/bundle/upload.26-support-bundle.tar.gz";
+//		  
+//		  Pattern p = Pattern.compile("^(\\w+).*");
+//		  
+//		  Matcher matcher = p.matcher(md5);
+//		  
+//		  if(matcher.find()){
+//			  System.out.println(matcher.group(1));
+//		  }
 		  
-		  Pattern p = Pattern.compile("^(\\w+).*");
 		  
-		  Matcher matcher = p.matcher(md5);
-		  
+		  Pattern p = Pattern.compile("Serial number:\\s*(.*)");
+		  Matcher matcher = p.matcher("Serial number: AUDVZMAKURAFHU");
+		  String localSn ="";
 		  if(matcher.find()){
-			  System.out.println(matcher.group(1));
+			  localSn=  matcher.group(1);
 		  }
-		  
+		  System.out.println(localSn);
 		  
 //		  String location ="/auto/support/uploads/jmmoyer@geisinger.edu/ddr/bundle/upload.4-bundle-2014-04-04.tar.gz";
 //		  Pattern p =Pattern.compile("([^/]*$)");

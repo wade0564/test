@@ -18,12 +18,14 @@ public class StringTest {
 //		
 //		System.out.println(s2);
 		
+		
 	}
 	
 	
 	public void change(String old){
 		
 		String n ="1";
+			
 		
 		old=n;
 	}

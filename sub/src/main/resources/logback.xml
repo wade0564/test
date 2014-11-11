@@ -24,8 +24,8 @@
 	<!-- </logger> -->
 	<root level="INFO">
 		<!-- appender referenced after it is defined -->
-<!-- 		<appender-ref ref="STDOUT" /> -->
-		<appender-ref ref="FILEOUT" />
+		<appender-ref ref="STDOUT" />
+<!-- 		<appender-ref ref="FILEOUT" /> -->
 	</root>
 
 </configuration>

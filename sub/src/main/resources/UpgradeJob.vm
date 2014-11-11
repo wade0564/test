@@ -1,0 +1,21 @@
+node '$node' {
+        file { 'hermes.bundle':
+                 path => '/root/hermes/packages/$packageFileName',
+                 ensure => present,
+                 replace => true,
+                 source=>'puppet:///files/$packageFileName'
+           }
+        file{ 'hermes.paramsFile':
+                path => '/root/hermes/packages/${paramsFileName}.properties',
+                ensure => present,
+                require => File['hermes.bundle'],
+                source=>'puppet:///files/${paramsFileName}.properties'
+        }
+         exec {
+                'hermes.exec':
+                command => "curl -F 'action=upload' -F 'packageName=$packageName' -F 'runTime=$runTime' -F 'packagePath=/root/hermes/packages/get-system-info.zip' -F 'paramsFile=@/root/hermes/packages/$paramsFileName.properties' http://localhost:8080/hermes-agent/job/submit/$jobInsId ",
+                path => ['/usr/bin', '/usr/sbin', '/bin', '/sbin'],
+                require => File['hermes.paramsFile'],
+                logoutput => 'true'
+        }
+}

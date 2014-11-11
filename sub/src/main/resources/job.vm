@@ -1,0 +1,11 @@
+result=$(curl -sX POST -F packageName=hermes-agent params={version:"1.01"}   http://localhost:8080/hermes-agent/job/upgradeAgent/2501)
+if [ $result == 200 ]
+then
+	sh /var/hermes/tomcat7/bin/catalina.sh stop -force;
+	rm -R /var/hermes/tomcat7/webapps/hermes-agent/;
+	unzip -o  /root/hermes/hermes-agent.zip hermes-agent.war -d /var/hermes/tomcat7/webapps/;
+	sleep 10;
+	sh /var/hermes/tomcat7/bin/catalina.sh start;
+else
+        echo 'error'
+fi
