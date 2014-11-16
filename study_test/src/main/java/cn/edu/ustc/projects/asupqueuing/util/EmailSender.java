@@ -1,4 +1,4 @@
-package cn.edu.ustc.wade.project.asupqueuing.util;
+package cn.edu.ustc.projects.asupqueuing.util;
 
 import java.util.Properties;
 

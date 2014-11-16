@@ -1,4 +1,4 @@
-package cn.edu.ustc.wade.project.asupqueuing.business;
+package cn.edu.ustc.projects.asupqueuing.business;
 
 import java.util.Map;
 

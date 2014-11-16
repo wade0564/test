@@ -1,4 +1,4 @@
-package cn.edu.ustc.wade.project.asupqueuing.pojo;
+package cn.edu.ustc.projects.asupqueuing.pojo;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;

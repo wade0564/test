@@ -1,4 +1,4 @@
-package cn.edu.ustc.wade.project.asupqueuing.dao;
+package cn.edu.ustc.projects.asupqueuing.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import cn.edu.ustc.wade.project.asupqueuing.util.Params;
+import cn.edu.ustc.projects.asupqueuing.util.Params;
 
 public class BaseDao {
 

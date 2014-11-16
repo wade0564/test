@@ -1,4 +1,4 @@
-package cn.edu.ustc.wade.project.asupqueuing.main;
+package cn.edu.ustc.projects.asupqueuing.main;
 
 public class StringTest {
 

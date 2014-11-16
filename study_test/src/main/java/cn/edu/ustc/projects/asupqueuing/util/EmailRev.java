@@ -1,4 +1,4 @@
-package cn.edu.ustc.wade.project.asupqueuing.util;
+package cn.edu.ustc.projects.asupqueuing.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

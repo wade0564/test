@@ -1,13 +1,13 @@
-package cn.edu.ustc.wade.project.asupqueuing.main;
+package cn.edu.ustc.projects.asupqueuing.main;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.edu.ustc.wade.project.asupqueuing.business.Producer;
-import cn.edu.ustc.wade.project.asupqueuing.pojo.SubMessage;
-import cn.edu.ustc.wade.project.asupqueuing.util.Params;
+import cn.edu.ustc.projects.asupqueuing.business.Producer;
+import cn.edu.ustc.projects.asupqueuing.pojo.SubMessage;
+import cn.edu.ustc.projects.asupqueuing.util.Params;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.ConsumerCancelledException;

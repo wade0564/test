@@ -1,8 +1,8 @@
-package cn.edu.ustc.wade.project.asupqueuing.main;
+package cn.edu.ustc.projects.asupqueuing.main;
 
 import java.io.IOException;
 
-import cn.edu.ustc.wade.project.asupqueuing.business.Consumer;
+import cn.edu.ustc.projects.asupqueuing.business.Consumer;
 
 import com.rabbitmq.client.ConsumerCancelledException;
 import com.rabbitmq.client.ShutdownSignalException;

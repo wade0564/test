@@ -1,4 +1,4 @@
-package cn.edu.ustc.wade.project.asupqueuing.business;
+package cn.edu.ustc.projects.asupqueuing.business;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,8 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.edu.ustc.wade.project.asupqueuing.pojo.SubMessage;
-import cn.edu.ustc.wade.project.asupqueuing.util.Params;
+import cn.edu.ustc.projects.asupqueuing.pojo.SubMessage;
+import cn.edu.ustc.projects.asupqueuing.util.Params;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
