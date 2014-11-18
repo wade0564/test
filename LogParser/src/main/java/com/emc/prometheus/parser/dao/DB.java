@@ -31,6 +31,11 @@ public class DB {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	//update in memory db, wade TODO:
+	public static void update(Object key, Object value){
+		
+	}
 
 
 }

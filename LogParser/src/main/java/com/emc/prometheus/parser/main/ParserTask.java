@@ -13,6 +13,8 @@ import com.emc.prometheus.parser.dao.LogDao;
 import com.emc.prometheus.parser.dedupe.DedupProcessor;
 import com.emc.prometheus.parser.dedupe.TsAndMsg;
 import com.emc.prometheus.parser.parse.Parser;
+import com.emc.prometheus.parser.persist.FilePersistenceProcessor;
+import com.emc.prometheus.parser.pojo.CompositeLogInfo;
 import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
@@ -30,18 +32,25 @@ public class ParserTask implements Runnable {
 	@Autowired
 	DedupProcessor dedupProcessor;
 	
+	@Autowired
+	FilePersistenceProcessor filePersistenceProcessor;
+	
+	CompositeLogInfo compositeLogInfo ;
 
 	@Override
 	public void run() {
 
 		while (true) {
 
-			List<LogInfo> logInfos = getLogInfo();
+			compositeLogInfo = logDao.getLogInfos();
+			
+			List<LogInfo> logInfos = compositeLogInfo.getLogInfos();
 			// if no file to parse , task over
-			if (logInfos == null || logInfos.size() == 0) {
+			if (logInfos.isEmpty()) {
 				break;
 			}
 
+			
 			for (LogInfo logInfo : logInfos) {
 				try {
 					process(logInfo);
