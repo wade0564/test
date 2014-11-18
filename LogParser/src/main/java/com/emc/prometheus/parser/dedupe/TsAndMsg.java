@@ -27,6 +27,19 @@ public class TsAndMsg {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+	
+
+	public Long getTs() {
+		return ts;
+	}
+
+	public void setTs(Long ts) {
+		this.ts = ts;
+	}
+
+	public boolean isToBeWritten() {
+		return toBeWritten;
+	}
 
 	public boolean toBeWritten() {
 		return toBeWritten;
