@@ -35,25 +35,12 @@ public class LogDao extends JdbcDaoSupport {
 	private @Value("${LOG.MAX.ASUPID}") Long maxAsupId; 
 
 
-	public boolean md5Duplicated(String md5) {
-		if (md5 != null && !md5.isEmpty()) {
-			int r = getJdbcTemplate().queryForInt(
-					"SELECT count(*) FROM asup.sub WHERE md5 = '" + md5 + "' and status !='NOT_PARSED_TOO_OLD'");
-			
-			if (r > 0) {
-				// it is duplicated
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 
 	
 	public List<LogInfo> getLogInfos(){
 		
 		//TODO getLastAsupId
+		
 		DB db ;
 		Long lastAsupId = 1L;
 		
@@ -63,6 +50,7 @@ public class LogDao extends JdbcDaoSupport {
 										+ " WHERE asupid >= %s %s and file_handler is not null"
 										+ " order by asupid asc LIMIT %s",lastAsupId>minAsupId?lastAsupId:minAsupId,maxAsupId==null?"":"and asupid<="+maxAsupId,logSelectLimit);
 		
+		//TODO exception Catch
 		List<LogInfo> logInfos = getJdbcTemplate().query(sql,new RowMapper<LogInfo>(){
 			@Override
 			public LogInfo mapRow(ResultSet rs, int rowNum) throws SQLException {

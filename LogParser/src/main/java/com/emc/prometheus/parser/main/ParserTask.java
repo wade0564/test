@@ -2,7 +2,6 @@ package com.emc.prometheus.parser.main;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.emc.prometheus.parser.dao.LogDao;
-import com.emc.prometheus.parser.dedupe.DedupeProcessor;
+import com.emc.prometheus.parser.dedupe.DedupProcessor;
 import com.emc.prometheus.parser.dedupe.TsAndMsg;
 import com.emc.prometheus.parser.parse.Parser;
 import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
@@ -29,7 +28,7 @@ public class ParserTask implements Runnable {
 	Parser parser;
 
 	@Autowired
-	DedupeProcessor dedupeProcessor;
+	DedupProcessor dedupProcessor;
 	
 
 	@Override
