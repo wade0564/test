@@ -11,6 +11,13 @@ public class StoreFile {
 	File storeFile;
 	
 	Integer content;
+	
+	Integer pos;//last line position
+	
+	public StoreFile(File storeFile) {
+		super();
+		this.storeFile = storeFile;
+	}
 
 	public File getStoreFile() {
 		return storeFile;
@@ -27,6 +34,15 @@ public class StoreFile {
 	public void setContent(Integer content) {
 		this.content = content;
 	}
+
+	public Integer getPos() {
+		return pos;
+	}
+
+	public void setPos(Integer pos) {
+		this.pos = pos;
+	}
+	
 	
 	
 
