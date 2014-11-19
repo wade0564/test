@@ -1,6 +1,7 @@
 package com.emc.prometheus.parser.persist;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,10 +35,9 @@ public class FilePersistenceProcessor {
 	}
 	
 
-	private StoreFile getFile(LogInfo logInfo, LOG_TYPE logType) {
-		
-		StoreFile storeFile = null;
+	private StoreFile getFile(LogInfo logInfo, LOG_TYPE logType) throws IOException {
 
+		StoreFile storeFile = null;
 		// generate the directory date folder base on epoch
 		String dateDiretory = String.format("%1$tY/%1$tm/%1$td", getUTCTime(logInfo.getEpoch()));
 		
@@ -48,16 +48,11 @@ public class FilePersistenceProcessor {
 		}else{ //else create new date folder and store log file
 			//TODO: test if directory can be made directly
 			directory.mkdir();
-			/*storeFile = new File(dateDiretory + logInfo.getAsupId() + "-" + logInfo.getAsupId() + "." + logType);
-			storeFile.createNewFile();
+			storeFile = createNewStoreFile(logInfo, rootDirectory + dateDiretory, logType);
 			//update to db <LOG_TYPE, storeFile>
-			DB.update(logType, f);*/
+			DB.update(logType, storeFile);
 		}
 		
-		
-		
-		
-
 		// TODO:
 		// if exceed the capacity, create a new store file, and after writing the
 		// logs , update the DB
@@ -65,6 +60,8 @@ public class FilePersistenceProcessor {
 
 		if (content >= asupIdCapacity) {
 			// create new file
+			storeFile = createNewStoreFile(logInfo, rootDirectory + dateDiretory, logType);
+			DB.update(logType, storeFile);
 		}
 
 		return storeFile;
@@ -120,6 +117,12 @@ public class FilePersistenceProcessor {
 		cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));
 		
 		return new Date(cal.getTimeInMillis());
+	}
+	
+	private StoreFile createNewStoreFile(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
+		File f = new File(directory , logInfo.getAsupId() + "-" + logInfo.getAsupId() + "." + logType);
+		f.createNewFile();
+		return new StoreFile(f);
 	}
 
 }
