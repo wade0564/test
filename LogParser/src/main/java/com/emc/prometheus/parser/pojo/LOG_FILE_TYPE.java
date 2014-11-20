@@ -1,27 +1,37 @@
 package com.emc.prometheus.parser.pojo;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum LOG_FILE_TYPE {
 
-	ASUP, SUB, KERN_INFO, KERN_ERROR, MESSAGES_ENGINEERING, VTL_INFO, BIOS, UNKONWN;
+	ASUP("autosupport"), SUB("tar.gz||tgz"), KERN_INFO("kern.info"), KERN_ERROR("vtl.info"), MESSAGES_ENGINEERING("messages.engineering"), VTL_INFO("vtl.info"), BIOS("bios.txt"), UNKONWN(".*");
 
+
+	private String fileNamePattern;
+	
+	private LOG_FILE_TYPE(String fileNamePattern){
+		this.fileNamePattern=fileNamePattern;
+	}
+	
+	public static List<LOG_FILE_TYPE> getFileTypeInSub(){
+		return Arrays.asList(ASUP,KERN_INFO,KERN_ERROR,MESSAGES_ENGINEERING,VTL_INFO,BIOS);
+	}
+	
+	private String getFilenamePattern(){
+		return fileNamePattern;
+	}
+	
 	public static LOG_FILE_TYPE getType(String filehandler) {
 
-		LOG_FILE_TYPE type;
-
-		if (filehandler.contains("autosupport")) {
-			type = ASUP;
-		} else if (filehandler.contains("kern.info")) {
-			type = KERN_INFO;
-		} else if (filehandler.contains("vtl.info")) {
-			type = VTL_INFO;
-		} else if (filehandler.contains("bios.txt")) {
-			type = BIOS;
-		} else {
-			type = UNKONWN;
+		List<LOG_FILE_TYPE> fileTypeInSub = getFileTypeInSub();
+		
+		for (LOG_FILE_TYPE logFileType : fileTypeInSub) {
+			if(filehandler.contains(logFileType.getFilenamePattern())){
+				return logFileType;
+			}
 		}
-
-		return type;
-
+		return UNKONWN;
 	}
 
 }

@@ -15,6 +15,11 @@
 			<version>5.0.73</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -214,11 +219,11 @@
 
 
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>ch.qos.logback</groupId> -->
-<!-- 			<artifactId>logback-classic</artifactId> -->
-<!-- 			<version>1.0.13</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>ch.qos.logback</groupId> -->
+		<!-- <artifactId>logback-classic</artifactId> -->
+		<!-- <version>1.0.13</version> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 
@@ -251,6 +256,11 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>2.10.1</version>
+		</dependency>
 	</dependencies>
 
 </project>
