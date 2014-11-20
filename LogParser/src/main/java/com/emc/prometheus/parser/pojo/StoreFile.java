@@ -10,18 +10,18 @@ public class StoreFile {
 	
 	File storeFile;
 	
-	Integer content;
+	int content;
 	
-	Long lastPos;//last line position
+	long lastPos;//last line position
 	
-	Long currentPos;
+	long currentPos;
 	
 	public StoreFile(File storeFile) {
 		super();
 		this.storeFile = storeFile;
 	}
 	
-	public StoreFile(File storeFile, Integer content, Long lastPos, Long currentPos) {
+	public StoreFile(File storeFile, int content, long lastPos, long currentPos) {
 		super();
 		this.storeFile = storeFile;
 		this.content = content;
@@ -37,31 +37,28 @@ public class StoreFile {
 		this.storeFile = storeFile;
 	}
 
-	public Integer getContent() {
+	public int getContent() {
 		return content;
 	}
 
-	public void setContent(Integer content) {
+	public void setContent(int content) {
 		this.content = content;
 	}
 
-	public Long getLastPos() {
+	public long getLastPos() {
 		return lastPos;
 	}
 
-	public void setLastPos(Long lastPos) {
+	public void setLastPos(long lastPos) {
 		this.lastPos = lastPos;
 	}
 
-	public Long getCurrentPos() {
+	public long getCurrentPos() {
 		return currentPos;
 	}
 
-	public void setCurrentPos(Long currentPos) {
+	public void setCurrentPos(long currentPos) {
 		this.currentPos = currentPos;
 	}
-	
-	
-	
 
 }

@@ -25,9 +25,9 @@ public class FilePersistenceProcessor {
 	
 	private @Value("${LOGFILE.FOLDER.SIZE}") Integer folderSize;
 	
-	private boolean isStoreFileNewlyCreated = false;
-	private boolean isLogDirectoryNewlyCreated = false;
-	private boolean isLogTypeDirectoryNewlyCreated = false;
+	private File newlyCreatedStoreFile = null;
+	private File newlyCreatedLogDirectory = null;
+	private File newlyCreatedLogTypeDirectory = null;
 
 	public void persist(LogInfo logInfo, LOG_TYPE logType, List<TsAndMsg> tsAndMsgs) throws Exception {
 
@@ -57,65 +57,26 @@ public class FilePersistenceProcessor {
 			//get storeFile's directory, see if exceeds LOGFILE.FOLDER.SIZE
 			int size = getCurrentFolderSize(new File(storeFile.getStoreFile().getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'))));
 			if(size > folderSize){
-				try{
-					logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
-					if(logDirectory != null){
-						this.isLogDirectoryNewlyCreated = true;
-					}
-					storeFile = new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
-					if(storeFile != null){
-						this.isStoreFileNewlyCreated = true;
-					}
-				}catch(Exception e){
-					throw e;
-				}
-				return storeFile;
+				logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+				return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
 			}else{
 				//get files content, see if exceeds asupIdCapacity
 				int content = storeFile.getContent();
 				if(content >= asupIdCapacity && size < folderSize){
-					try{
-						storeFile = new StoreFile(createNewStoreFile(logInfo, logTypeDirectory.getAbsolutePath(), logType));
-						if(storeFile != null){
-							this.isStoreFileNewlyCreated = true;
-						}
-					}catch(Exception e){
-						throw e;
-					}
-					return storeFile;
+					logDirectory = new File(storeFile.getStoreFile().getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\')));
+					return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
 				}else if(content >= asupIdCapacity && size == folderSize){
-					try{
-						logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
-						if(logDirectory != null){
-							this.isLogDirectoryNewlyCreated = true;
-						}
-						storeFile = new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
-						if(storeFile != null){
-							this.isStoreFileNewlyCreated = true;
-						}
-					}catch(Exception e){
-						throw e;
-					}
-					return storeFile;
+					logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+					return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
 				}else{
 					return storeFile;
 				}
 			}
 		}else{
-			try{
-				this.isLogTypeDirectoryNewlyCreated = logTypeDirectory.mkdir();
-				logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
-				if(logDirectory != null){
-					this.isLogDirectoryNewlyCreated = true;
-				}
-				storeFile = new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
-				if(storeFile != null){
-					this.isStoreFileNewlyCreated = true;
-				}
-			}catch(Exception e){
-				throw e;
-			}
-			return storeFile;
+			logTypeDirectory.mkdir();
+			this.newlyCreatedLogTypeDirectory = logTypeDirectory;
+			logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+			return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
 		}
 	}
 
@@ -180,11 +141,11 @@ public class FilePersistenceProcessor {
 	
 	
 	private void erase(StoreFile storeFile) throws Exception {
-		File file = storeFile.getStoreFile();
-		File logDirectory = null;
-		File logTypeDirectory = null;
-		
-		if(!isStoreFileNewlyCreated){
+		File file = null;
+		if(storeFile != null){
+			file = storeFile.getStoreFile();
+		}
+		if(newlyCreatedStoreFile == null && file != null){
 			try{
 				RandomAccessFile raf = new RandomAccessFile(file.getAbsoluteFile(), "rw");
 				raf.setLength(storeFile.getLastPos());
@@ -192,21 +153,18 @@ public class FilePersistenceProcessor {
 			}catch(IOException e){
 				throw new Exception("The log was written unsuccessfully, but could not restore to the preversion successfully.");
 			}
-		}else{
-			file.delete();
-			if(isLogDirectoryNewlyCreated){
-				String logDirectoryPath = file.getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'));
-				logDirectory = new File(logDirectoryPath);
-				if(!logDirectory.delete()){
-					throw new Exception("The log was written unsuccessfully, but the newly created log directory was not deleted.");
-				}
+		}else if(newlyCreatedStoreFile != null){
+			newlyCreatedStoreFile.delete();
+		}
+		
+		if(newlyCreatedLogDirectory != null){
+			if(!newlyCreatedLogDirectory.delete()){
+				throw new Exception("The log was written unsuccessfully, but the newly created log directory was not deleted.");
 			}
-			if(isLogTypeDirectoryNewlyCreated){
-				String logTypeDirectoryPath = logDirectory.getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'));
-				logTypeDirectory = new File(logTypeDirectoryPath);
-				if(!logTypeDirectory.delete()){
-					throw new Exception("The log was written unsuccessfully, but the newly created log type directory was not deleted.");
-				}
+		}
+		if(newlyCreatedLogTypeDirectory != null){
+			if(!newlyCreatedLogTypeDirectory.delete()){
+				throw new Exception("The log was written unsuccessfully, but the newly created log type directory was not deleted.");
 			}
 		}
 	}
@@ -220,13 +178,14 @@ public class FilePersistenceProcessor {
 		// any else ?
 		fileToBeWritten.setLastPos(fileToBeWritten.getCurrentPos());
 		fileToBeWritten.setContent(fileToBeWritten.getContent() + 1);
+		System.out.println(fileToBeWritten.getCurrentPos());
 		DB.update(logType, fileToBeWritten);
 	}
 	
 	private File createNewDirectory(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
 		File f = new File(directory, logInfo.getAsupId().toString());
-		boolean isNewDirectoryCreated = f.mkdir();
-		if(isNewDirectoryCreated){
+		if(f.mkdir()){
+			this.newlyCreatedLogDirectory = f;
 			return f;
 		}else{
 			return null;
@@ -234,9 +193,9 @@ public class FilePersistenceProcessor {
 	}
 	
 	private File createNewStoreFile(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
-		File f = new File(directory, logInfo.getAsupId() + "-" + logInfo.getAsupId() + "." + logType.toString());
-		boolean isNewStoreFileCreated = f.createNewFile();
-		if(isNewStoreFileCreated){
+		File f = new File(directory, logInfo.getAsupId() + "-" + logInfo.getAsupId() + "." + logType.getValue());
+		if(f.createNewFile()){
+			this.newlyCreatedStoreFile = f;
 			return f;
 		}else{
 			return null;
