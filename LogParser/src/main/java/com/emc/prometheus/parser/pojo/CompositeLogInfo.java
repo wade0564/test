@@ -29,5 +29,13 @@ public class CompositeLogInfo {
 		this.subLogMap = subLogMap;
 	}
 	
+	public boolean isEmpty(){
+		if(logInfos==null || logInfos.isEmpty()){
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	
 }

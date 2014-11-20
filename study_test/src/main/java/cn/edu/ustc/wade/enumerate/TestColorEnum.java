@@ -14,6 +14,8 @@ public class TestColorEnum {
 			
 		}
 		
+		System.out.println(Day.Mon.getValue());
+		
 		
 	}
 

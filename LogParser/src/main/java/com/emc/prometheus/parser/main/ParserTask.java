@@ -44,17 +44,12 @@ public class ParserTask implements Runnable {
 
 			compositeLogInfo = logDao.getLogInfos();
 			
-			List<LogInfo> logInfos = compositeLogInfo.getLogInfos();
 			// if no file to parse , task over
-			if (logInfos.isEmpty()) {
-				break;
-			}
-
-			
-			for (LogInfo logInfo : logInfos) {
+			if(!compositeLogInfo.isEmpty()){
 				try {
-					process(logInfo);
+					process();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -62,24 +57,41 @@ public class ParserTask implements Runnable {
 		}
 	}
 
+	private void process() throws IOException {
+		
+		List<LogInfo> logInfos = compositeLogInfo.getLogInfos();
+	
+		for (LogInfo logInfo : logInfos) {
+			try {
+				process(logInfo);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+				
+	}
+	
+	
 	private void process(LogInfo logInfo) throws IOException {
 		
-		Map<File, LOG_FILE_TYPE> logFileMap = FileUtils.getLogFileMap(logInfo);
-		
-		for (Entry<File, LOG_FILE_TYPE> logFileEntry : logFileMap.entrySet()) {
-		
-			parse(logInfo,logFileEntry);
-			
-			//get ts and msg  order by ts
-			Map<LOG_TYPE, List<TsAndMsg>> tsAndMsgMap = getTsAndMsg(logInfo);
-			
-			dedupe(logInfo,tsAndMsgMap);
-			
-			persist(logInfo,tsAndMsgMap);
-			
+		Map<File, LOG_FILE_TYPE> logFileMap = null;
+		if(logInfo.getType()==LOG_FILE_TYPE.ASUP){
+			logFileMap = FileUtils.getAsupLogFileMap(logInfo);
+		}else {
+			logFileMap = FileUtils.getSubLogFileMap(logInfo,compositeLogInfo.getSubLogMap().get(logInfo));
 		}
 
-				
+		for (Entry<File, LOG_FILE_TYPE> logFileEntry : logFileMap.entrySet()) {
+
+			parse(logInfo, logFileEntry);
+			// get ts and msg order by ts
+			Map<LOG_TYPE, List<TsAndMsg>> tsAndMsgMap = getTsAndMsg(logInfo);
+
+			dedupe(logInfo, tsAndMsgMap);
+
+			persist(logInfo, tsAndMsgMap);
+
+		}
 	}
 
 	private Map<LOG_TYPE, List<TsAndMsg>> getTsAndMsg(LogInfo logInfo) {
