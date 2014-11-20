@@ -12,11 +12,21 @@ public class StoreFile {
 	
 	Integer content;
 	
-	Integer pos;//last line position
+	Long lastPos;//last line position
+	
+	Long currentPos;
 	
 	public StoreFile(File storeFile) {
 		super();
 		this.storeFile = storeFile;
+	}
+	
+	public StoreFile(File storeFile, Integer content, Long lastPos, Long currentPos) {
+		super();
+		this.storeFile = storeFile;
+		this.content = content;
+		this.lastPos = lastPos;
+		this.currentPos = currentPos;
 	}
 
 	public File getStoreFile() {
@@ -35,12 +45,20 @@ public class StoreFile {
 		this.content = content;
 	}
 
-	public Integer getPos() {
-		return pos;
+	public Long getLastPos() {
+		return lastPos;
 	}
 
-	public void setPos(Integer pos) {
-		this.pos = pos;
+	public void setLastPos(Long lastPos) {
+		this.lastPos = lastPos;
+	}
+
+	public Long getCurrentPos() {
+		return currentPos;
+	}
+
+	public void setCurrentPos(Long currentPos) {
+		this.currentPos = currentPos;
 	}
 	
 	

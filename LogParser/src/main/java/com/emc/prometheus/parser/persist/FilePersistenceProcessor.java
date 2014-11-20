@@ -2,6 +2,7 @@ package com.emc.prometheus.parser.persist;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,93 +22,231 @@ public class FilePersistenceProcessor {
 	private @Value("${LOGFILE.ASUPID.CAPACITY}") Integer asupIdCapacity;
 	
 	private @Value("${LOGFILE.ROOT}") String rootDirectory;
+	
+	private @Value("${LOGFILE.FOLDER.SIZE}") Integer folderSize;
+	
+	private boolean isStoreFileNewlyCreated = false;
+	private boolean isLogDirectoryNewlyCreated = false;
+	private boolean isLogTypeDirectoryNewlyCreated = false;
 
 	public void persist(LogInfo logInfo, LOG_TYPE logType, List<TsAndMsg> tsAndMsgs) throws Exception {
 
-		StoreFile fileToBeWritten = getFile(logInfo, logType);
-
-		// write log entry to file
-		writeLogs(logInfo, tsAndMsgs, fileToBeWritten);
-
-		renameStoreFile(logInfo, logType, fileToBeWritten);
-
-		updateDB();
+		StoreFile fileToBeWritten = null;
+		try{
+			fileToBeWritten = getFile(logInfo, logType);
+			// write log entry to file
+			fileToBeWritten = writeLogs(logInfo, tsAndMsgs, fileToBeWritten);
+			fileToBeWritten = renameStoreFile(logInfo, logType, fileToBeWritten);
+		}catch(Exception e){
+			erase(fileToBeWritten);
+			throw e;
+		}
+		updateDB(logType, fileToBeWritten);
 	}
 	
 
 	private StoreFile getFile(LogInfo logInfo, LOG_TYPE logType) throws IOException {
 
 		StoreFile storeFile = null;
-		// generate the directory date folder base on epoch
-		String dateDiretory = String.format("%1$tY/%1$tm/%1$td", getUTCTime(logInfo.getEpoch()));
+		File logTypeDirectory = new File(rootDirectory + logType.getValue());
+		File logDirectory = null;
 		
-		//check if directory exists
-		File directory = new File(rootDirectory + dateDiretory);
-		if(directory.exists()){ // if exists, get from db
+		//check if log type directory exists
+		if(logTypeDirectory.exists()){
 			storeFile = DB.getStoreFile(logType);
-		}else{ //else create new date folder and store log file
-			//TODO: test if directory can be made directly
-			directory.mkdir();
-			storeFile = createNewStoreFile(logInfo, rootDirectory + dateDiretory, logType);
-			//update to db <LOG_TYPE, storeFile>
-			DB.update(logType, storeFile);
+			//get storeFile's directory, see if exceeds LOGFILE.FOLDER.SIZE
+			int size = getCurrentFolderSize(new File(storeFile.getStoreFile().getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'))));
+			if(size > folderSize){
+				try{
+					logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+					if(logDirectory != null){
+						this.isLogDirectoryNewlyCreated = true;
+					}
+					storeFile = new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
+					if(storeFile != null){
+						this.isStoreFileNewlyCreated = true;
+					}
+				}catch(Exception e){
+					throw e;
+				}
+				return storeFile;
+			}else{
+				//get files content, see if exceeds asupIdCapacity
+				int content = storeFile.getContent();
+				if(content >= asupIdCapacity && size < folderSize){
+					try{
+						storeFile = new StoreFile(createNewStoreFile(logInfo, logTypeDirectory.getAbsolutePath(), logType));
+						if(storeFile != null){
+							this.isStoreFileNewlyCreated = true;
+						}
+					}catch(Exception e){
+						throw e;
+					}
+					return storeFile;
+				}else if(content >= asupIdCapacity && size == folderSize){
+					try{
+						logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+						if(logDirectory != null){
+							this.isLogDirectoryNewlyCreated = true;
+						}
+						storeFile = new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
+						if(storeFile != null){
+							this.isStoreFileNewlyCreated = true;
+						}
+					}catch(Exception e){
+						throw e;
+					}
+					return storeFile;
+				}else{
+					return storeFile;
+				}
+			}
+		}else{
+			try{
+				this.isLogTypeDirectoryNewlyCreated = logTypeDirectory.mkdir();
+				logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+				if(logDirectory != null){
+					this.isLogDirectoryNewlyCreated = true;
+				}
+				storeFile = new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
+				if(storeFile != null){
+					this.isStoreFileNewlyCreated = true;
+				}
+			}catch(Exception e){
+				throw e;
+			}
+			return storeFile;
 		}
-		
-		// TODO:
-		// if exceed the capacity, create a new store file, and after writing the
-		// logs , update the DB
-		Integer content = storeFile.getContent();
-
-		if (content >= asupIdCapacity) {
-			// create new file
-			storeFile = createNewStoreFile(logInfo, rootDirectory + dateDiretory, logType);
-			DB.update(logType, storeFile);
-		}
-
-		return storeFile;
 	}
 
-	private void updateDB() throws Exception {
 
-		// Some Items need to be updated in DB
-		// current logType asup count
-		// the last line position in stored file
-		// any else ?
+	private StoreFile writeLogs(LogInfo logInfo, List<TsAndMsg> tsAndMsgs, StoreFile fileToBeWritten) throws Exception {
+
+		// if throws exception ,catch it and erase what be written just now
+		// store a record which means last log's last line position
+		File file = fileToBeWritten.getStoreFile();
+		Long preLastPosition = fileToBeWritten.getLastPos();
+
+		RandomAccessFile raf = new RandomAccessFile(file.getAbsoluteFile(), "rw");
+		try{
+			raf.seek(preLastPosition);
+			for (TsAndMsg tsAndMsg : tsAndMsgs) {
+				// the format as follow, asupid|ts(date,not long)|msg, notice the ts zone must be UTC
+				String logStr = String.format("%s|%s|%s", logInfo.getAsupId(), getUTCTime(tsAndMsg.getTs()), tsAndMsg.getMsg());
+				raf.writeBytes(logStr);
+				raf.writeBytes("\r\n");
+			}
+		}catch(Exception e){
+			throw e;
+		}finally{
+			raf.close();
+		}
+		fileToBeWritten.setCurrentPos(file.length());
+		return fileToBeWritten;
 	}
+	
 
-	private void renameStoreFile(LogInfo logInfo, LOG_TYPE logType,
-			StoreFile toBeWrittenFile) throws Exception {
+	private StoreFile renameStoreFile(LogInfo logInfo, LOG_TYPE logType, StoreFile fileToBeWritten) throws Exception {
 		// The store file name format startAsupId_endAsupid.logType is eg.
 		// 1000-30000.message
 
 		// NOTICE: The file can't rename when other application reading or using
 		// it will throw IOException,catch it then do it again 1000 times maybe
-
-	}
-
-	private void writeLogs(LogInfo logInfo, List<TsAndMsg> tsAndMsgs,
-			StoreFile toBeWrittenFile) throws Exception {
-
-		// TODO
-		// if throws exception ,catch it and erase what be written just now
-		// store a record which means last log's last line position
-		for (TsAndMsg tsAndMsg : tsAndMsgs) {
-			// the format as follow, asupid|ts(date,not long)|msg
-			// notice the Ts zone must be UTC
-			String logStr = String.format("%s|%s|%s", logInfo.getAsupId(),
-					new Date(tsAndMsg.getTs()), tsAndMsg.getMsg());
-			// use buffered writer to write
-			// close the writer
+		int flag = 0;
+		File newFile = null;
+		
+		while(flag <= 1000){
+			try{
+				File file = fileToBeWritten.getStoreFile();
+				String preFileLocation = file.getAbsolutePath();
+				String firstAsupId = file.getName().substring(0, file.getName().indexOf('-'));
+				String newFileLocation = preFileLocation.substring(0, preFileLocation.lastIndexOf('\\'));
+				
+				newFile = new File(newFileLocation + "\\" + firstAsupId + "-" + logInfo.getAsupId() + "." + logType.getValue());
+				file.renameTo(newFile);
+				break;
+			}catch(Exception e){
+				if(flag >= 1000){
+					throw e;
+				}else{
+					Thread.sleep(1000);
+					flag++;
+				}
+			}
 		}
-
+		
+		return new StoreFile(newFile, fileToBeWritten.getContent(), fileToBeWritten.getLastPos(), fileToBeWritten.getCurrentPos());
 	}
 	
-
-	// when throw exception ,erase the written content in stored file
-	private void erase() {
-
+	
+	private void erase(StoreFile storeFile) throws Exception {
+		File file = storeFile.getStoreFile();
+		File logDirectory = null;
+		File logTypeDirectory = null;
+		
+		if(!isStoreFileNewlyCreated){
+			try{
+				RandomAccessFile raf = new RandomAccessFile(file.getAbsoluteFile(), "rw");
+				raf.setLength(storeFile.getLastPos());
+				raf.close();
+			}catch(IOException e){
+				throw new Exception("The log was written unsuccessfully, but could not restore to the preversion successfully.");
+			}
+		}else{
+			file.delete();
+			if(isLogDirectoryNewlyCreated){
+				String logDirectoryPath = file.getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'));
+				logDirectory = new File(logDirectoryPath);
+				if(!logDirectory.delete()){
+					throw new Exception("The log was written unsuccessfully, but the newly created log directory was not deleted.");
+				}
+			}
+			if(isLogTypeDirectoryNewlyCreated){
+				String logTypeDirectoryPath = logDirectory.getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'));
+				logTypeDirectory = new File(logTypeDirectoryPath);
+				if(!logTypeDirectory.delete()){
+					throw new Exception("The log was written unsuccessfully, but the newly created log type directory was not deleted.");
+				}
+			}
+		}
 	}
 	
+	
+	private void updateDB(LOG_TYPE logType, StoreFile fileToBeWritten) throws Exception {
+
+		// Some Items need to be updated in DB
+		// current logType asup count
+		// the last line position in stored file
+		// any else ?
+		fileToBeWritten.setLastPos(fileToBeWritten.getCurrentPos());
+		fileToBeWritten.setContent(fileToBeWritten.getContent() + 1);
+		DB.update(logType, fileToBeWritten);
+	}
+	
+	private File createNewDirectory(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
+		File f = new File(directory, logInfo.getAsupId().toString());
+		boolean isNewDirectoryCreated = f.mkdir();
+		if(isNewDirectoryCreated){
+			return f;
+		}else{
+			return null;
+		}
+	}
+	
+	private File createNewStoreFile(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
+		File f = new File(directory, logInfo.getAsupId() + "-" + logInfo.getAsupId() + "." + logType.toString());
+		boolean isNewStoreFileCreated = f.createNewFile();
+		if(isNewStoreFileCreated){
+			return f;
+		}else{
+			return null;
+		}
+	}
+	
+	private int getCurrentFolderSize(File f){
+		String files[] = f.list();
+		return files.length;
+	}
 	
 	private Date getUTCTime(Long ts){
 		Calendar cal = java.util.Calendar.getInstance();
@@ -119,10 +258,4 @@ public class FilePersistenceProcessor {
 		return new Date(cal.getTimeInMillis());
 	}
 	
-	private StoreFile createNewStoreFile(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
-		File f = new File(directory , logInfo.getAsupId() + "-" + logInfo.getAsupId() + "." + logType);
-		f.createNewFile();
-		return new StoreFile(f);
-	}
-
 }
