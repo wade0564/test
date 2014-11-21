@@ -1,18 +1,19 @@
 package com.emc.prometheus.parser.pojo;
 
 import java.io.File;
+import java.io.Serializable;
 
 /** 
  * @author wade 
  * @version Nov 18, 2014 10:31:40 AM 
  */
-public class StoreFile {
+public class StoreFile  implements Serializable{
 	
 	File storeFile;
 	
-	int content;
+	int content; // asupid amount symptomDataCount
 	
-	long lastPos;//last line position
+	long lastPos;//last offset position
 	
 	long currentPos;
 	

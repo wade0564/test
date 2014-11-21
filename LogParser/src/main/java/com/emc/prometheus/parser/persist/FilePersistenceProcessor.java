@@ -10,11 +10,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.emc.prometheus.parser.dao.DB;
 import com.emc.prometheus.parser.dedupe.TsAndMsg;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
 import com.emc.prometheus.parser.pojo.StoreFile;
+import com.emc.prometheus.parser.util.DBUtils;
 
 @Component
 public class FilePersistenceProcessor {
@@ -53,7 +53,7 @@ public class FilePersistenceProcessor {
 		
 		//check if log type directory exists
 		if(logTypeDirectory.exists()){
-			storeFile = DB.getStoreFile(logType);
+			storeFile = DBUtils.getStoreFile(logType);
 			//get storeFile's directory, see if exceeds LOGFILE.FOLDER.SIZE
 			int size = getCurrentFolderSize(new File(storeFile.getStoreFile().getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'))));
 			if(size > folderSize){
@@ -179,7 +179,7 @@ public class FilePersistenceProcessor {
 		fileToBeWritten.setLastPos(fileToBeWritten.getCurrentPos());
 		fileToBeWritten.setContent(fileToBeWritten.getContent() + 1);
 		System.out.println(fileToBeWritten.getCurrentPos());
-		DB.update(logType, fileToBeWritten);
+		DBUtils.update(logType, fileToBeWritten);
 	}
 	
 	private File createNewDirectory(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{

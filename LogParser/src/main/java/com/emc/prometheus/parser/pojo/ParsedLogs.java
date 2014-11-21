@@ -1,12 +1,9 @@
-package com.emc.prometheus.parser.parse;
+package com.emc.prometheus.parser.pojo;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.emc.prometheus.parser.parse.section.SECTION_SEGMENT;
-import com.emc.prometheus.parser.pojo.LOG_TYPE;
 
 public class ParsedLogs {
 

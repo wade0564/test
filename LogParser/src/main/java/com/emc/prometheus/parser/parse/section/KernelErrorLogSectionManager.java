@@ -2,13 +2,13 @@ package com.emc.prometheus.parser.parse.section;
 
 import java.util.List;
 
-import com.emc.prometheus.parser.parse.ParsedLogs;
 import com.emc.prometheus.parser.parse.match.IndivMatchSimple;
 import com.emc.prometheus.parser.parse.match.Match;
 import com.emc.prometheus.parser.parse.match.ParentMatchSimple;
 import com.emc.prometheus.parser.parse.regex.KernelLogExInfo;
 import com.emc.prometheus.parser.parse.regex.RegExMajorSections;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
+import com.emc.prometheus.parser.pojo.ParsedLogs;
 
 /**
  * For parent section: "==========  MESSAGES  ==========".

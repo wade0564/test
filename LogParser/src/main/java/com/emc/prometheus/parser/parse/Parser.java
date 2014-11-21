@@ -18,6 +18,7 @@ import com.emc.prometheus.parser.parse.section.SectionManager;
 import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
+import com.emc.prometheus.parser.pojo.ParsedLogs;
 import com.google.common.io.Files;
 
 @Component
@@ -48,11 +49,15 @@ public class Parser {
 			parsedLogMap.put(LOG_TYPE.MESSAGES, new ArrayList<String>());
 			parsedLogMap.put(LOG_TYPE.KERN_INFO, new ArrayList<String>());
 			parsedLogMap.put(LOG_TYPE.KERN_ERROR, new ArrayList<String>());
+			parsedLogMap.put(LOG_TYPE.BIOS, new ArrayList<String>());
+			parsedLogMap.put(LOG_TYPE.VTL_INFO, new ArrayList<String>());
 			//Generated Date
 			Map<LOG_TYPE, List<String>> generatedDateMap = new HashMap<LOG_TYPE, List<String>>();
 			generatedDateMap.put(LOG_TYPE.MESSAGES, new ArrayList<String>());
 			generatedDateMap.put(LOG_TYPE.KERN_INFO, new ArrayList<String>());
 			generatedDateMap.put(LOG_TYPE.KERN_ERROR, new ArrayList<String>());
+			generatedDateMap.put(LOG_TYPE.BIOS, new ArrayList<String>());
+			generatedDateMap.put(LOG_TYPE.VTL_INFO, new ArrayList<String>());
 			parsedLogs.setGeneratedDateMap(generatedDateMap);
 			break;
 		case MESSAGES_ENGINEERING:
@@ -63,6 +68,13 @@ public class Parser {
 			break;
 		case KERN_ERROR:
 			parsedLogMap.put(LOG_TYPE.KERN_ERROR, new ArrayList<String>());
+			break;
+		case BIOS:
+			parsedLogMap.put(LOG_TYPE.BIOS, new ArrayList<String>());
+			break;
+		case VTL_INFO:
+			parsedLogMap.put(LOG_TYPE.VTL_INFO, new ArrayList<String>());
+			break;
 		default:
 			break;
 		}

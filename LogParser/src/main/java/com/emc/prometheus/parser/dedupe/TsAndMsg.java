@@ -14,6 +14,9 @@ public class TsAndMsg {
 
 	boolean toBeWritten;
 	
+	public TsAndMsg(){
+	}
+	
 	public TsAndMsg(Long ts, String msg, boolean toBeWritten){
 		this.ts = ts;
 		this.msg = msg;

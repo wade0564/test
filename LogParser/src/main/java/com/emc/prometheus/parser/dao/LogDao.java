@@ -27,6 +27,7 @@ import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
 import com.emc.prometheus.parser.pojo.CompositeLogInfo;
+import com.emc.prometheus.parser.util.DBUtils;
 import com.google.common.base.Joiner;
 
 @Component
@@ -54,7 +55,7 @@ public class LogDao extends JdbcDaoSupport {
 		
 		CompositeLogInfo compositeLogInfo  = new CompositeLogInfo();
 		
-		DB db ;
+		DBUtils db ;
 		Long lastAsupId = 1L;
 		
 		String geninfoSql = String.format("SELECT asupid, sn, epoch, chassis_sn, (CASE WHEN from_sub=TRUE THEN 'SUB' ELSE 'ASUP' END) as type, file_handler"
@@ -78,7 +79,7 @@ public class LogDao extends JdbcDaoSupport {
 						LogInfo logInfo = new LogInfo();
 						logInfo.setAsupId(rs.getLong("asupid"));
 						logInfo.setSn(rs.getString("sn"));
-						logInfo.setEpoch(rs.getLong("epoch"));
+						logInfo.setEpoch(rs.getLong("epoch")*1000);
 						logInfo.setChassis_sn(rs.getString("chassis_sn"));
 						logInfo.setType(LOG_FILE_TYPE.valueOf(rs.getString("type")));
 						logInfo.setFile_handler(rs.getString("file_handler"));
@@ -98,7 +99,7 @@ public class LogDao extends JdbcDaoSupport {
 			String subContentSql = String.format("SELECT subid , (CASE WHEN asupid IS NULL THEN subid ELSE asupid END) AS asupid, path AS file_handler "
 													+ "FROM asup.sub_content "
 													+ "WHERE subid in(%s) and path !~ 'ddfs.info' "
-													+ "ORDER BY asupid"
+													+ "ORDER BY asupid,file_handler"
 													, Joiner.on(",").join(subids));
 			
 			log.debug("SubContent SQL: {}",subContentSql);

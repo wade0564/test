@@ -26,7 +26,7 @@ import com.sleepycat.persist.model.PrimaryKey;
 
 public class JEtest {
 	
-	private static final String ENV_PATH = "c:/bdb/";
+	private static final String ENV_PATH = "c:/berkeley_db/";
 
 	public static void main(String[] args) throws Exception {
 		
@@ -109,9 +109,10 @@ public class JEtest {
 		String value = "This is a test!(000)";
 		
 		DatabaseEntry keyEntry = new DatabaseEntry(key.getBytes("utf-8"));
-		DatabaseEntry valEntry = new DatabaseEntry(value.getBytes("utf-8"));
-		OperationStatus status = mytestdb.put(null, keyEntry, valEntry);
-		System.out.println("Put Status: " + status);
+//		DatabaseEntry valEntry = new DatabaseEntry(value.getBytes("utf-8"));
+		OperationStatus status =null; 
+//		status= mytestdb.put(null, keyEntry, valEntry);
+//		System.out.println("Put Status: " + status);
 		
 		//R
 		DatabaseEntry valGet = new DatabaseEntry();
