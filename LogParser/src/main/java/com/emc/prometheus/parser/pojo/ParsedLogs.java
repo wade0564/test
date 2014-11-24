@@ -33,6 +33,16 @@ public class ParsedLogs {
 	public void setGeneratedDateMap(Map<LOG_TYPE, List<String>> generatedDateMap) {
 		this.generatedDateMap = generatedDateMap;
 	}
+	
+	public void clear(){
+		if(parsedLogMap!=null){
+			parsedLogMap.clear();
+		}
+		if(generatedDateMap!=null){
+			generatedDateMap.clear();
+		}
+		
+	}
 
 	public List<String> getMatchResultsStorage(LOG_TYPE logType,SECTION_SEGMENT segment) {
 		

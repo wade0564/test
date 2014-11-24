@@ -30,7 +30,7 @@ public class CalendarTest {
 		SimpleDateFormat simpleDateFormat =new SimpleDateFormat("EEE, MMM dd, yyyy HH:mm:ss a z");
 		
 //		Date date = simpleDateFormat.parse("Monday December 16 2013 3:32:32 PM PST");
-		Date date2 = simpleDateFormat.parse("Friday, April 4, 2014 11:57:31 AM PDT");
+		Date date2 = simpleDateFormat.parse("Friday, April   4, 2014 11:57:31 AM PDT");
 		System.out.println("date2:"+date2);
 //		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //		System.out.println(date.getTime());

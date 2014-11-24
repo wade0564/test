@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.emc.prometheus.parser.util.EscapeUtils;
+
 /** 
 * @author wade 
 * @version Nov 11, 2014 8:04:28 PM 
@@ -73,7 +75,7 @@ public class IndivMatchSimple implements Match {
 		if(matcher.find()){
 			//section end need not store
 			if(matchResutls!=null){
-				matchResutls.add(matcher.group(1));
+				matchResutls.add(EscapeUtils.transferPipe(matcher.group(1)));
 			}
 			this.setMatchState(MatchState.SUCCESS);
 		}else {

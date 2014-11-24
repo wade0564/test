@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
+import com.emc.prometheus.parser.pojo.LOG_TYPE;
 
 public class LogTimeHandler {
 	private String genDateFormat;
@@ -38,9 +39,9 @@ public class LogTimeHandler {
 		this.infoTsRegex = infoTsRegex;
 	}
 
-	public static LogTimeHandler getTimeHandlerInstance(LOG_FILE_TYPE type) {
+	public static LogTimeHandler getTimeHandlerInstance(LOG_TYPE type) {
 
-		if (type != LOG_FILE_TYPE.VTL_INFO) {
+		if (type != LOG_TYPE.VTL_INFO) {
 			return new LogTimeHandler();
 		} else {
 			return new LogTimeHandler(

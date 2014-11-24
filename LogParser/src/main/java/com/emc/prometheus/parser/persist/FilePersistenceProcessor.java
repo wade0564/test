@@ -21,7 +21,7 @@ public class FilePersistenceProcessor {
 
 	private @Value("${LOGFILE.ASUPID.CAPACITY}") Integer asupIdCapacity;
 	
-	private @Value("${LOGFILE.ROOT}") String rootDirectory;
+	private @Value("${LOGFILE.STORAGE.ROOT}") String rootDirectory;
 	
 	private @Value("${LOGFILE.FOLDER.SIZE}") Integer folderSize;
 	
@@ -48,12 +48,17 @@ public class FilePersistenceProcessor {
 	private StoreFile getFile(LogInfo logInfo, LOG_TYPE logType) throws IOException {
 
 		StoreFile storeFile = null;
-		File logTypeDirectory = new File(rootDirectory + logType.getValue());
+		File logTypeDirectory = new File(rootDirectory , logType.getValue());
 		File logDirectory = null;
 		
 		//check if log type directory exists
 		if(logTypeDirectory.exists()){
 			storeFile = DBUtils.getStoreFile(logType);
+			
+			if(storeFile == null){
+				logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+				return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
+			}
 			//get storeFile's directory, see if exceeds LOGFILE.FOLDER.SIZE
 			int size = getCurrentFolderSize(new File(storeFile.getStoreFile().getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'))));
 			if(size > folderSize){

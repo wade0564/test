@@ -1,7 +1,9 @@
 package com.emc.prometheus.parser.parse;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 import com.emc.prometheus.parser.parse.match.Match;
@@ -94,7 +98,16 @@ public class Parser {
 
 	private String getLogContent(File logFile) throws IOException {
 		// get log file content,maybe it's a 500M+ string
-		String logContent = Files.toString(logFile, StandardCharsets.UTF_8);
+		InputStream is = new FileInputStream(logFile);
+		if(logFile.getName().endsWith("gz")){
+			is = new GZIPInputStream(is);
+		}
+		String logContent=null;
+		try{
+			logContent = IOUtils.toString(is);
+		}finally{
+			is.close();
+		}
 		return logContent;
 	}
 

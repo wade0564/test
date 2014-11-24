@@ -64,10 +64,11 @@ public class FileUtils {
 		for (String subDir : asupSubDirectory) {
 			File dir = new File(ASUP_LOG_ROOT_DIRECTORY, subDir);
 			asup = new File(dir, file_handler + GZ);
-			log.debug("asup file location : {}",asup);
 			if (asup.exists()) {
+				log.debug("asup file is found location : {}",asup.getAbsoluteFile());
 				break;
 			} else {
+				log.debug("asup file not found location : {}",asup.getAbsoluteFile());
 				asup = null;
 			}
 		}

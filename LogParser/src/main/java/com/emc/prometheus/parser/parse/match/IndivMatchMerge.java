@@ -43,7 +43,7 @@ public class IndivMatchMerge extends IndivMatchSimple {
 				matchResutls.set(matchResutls.size()-1, LastLog);
 			}else{
 				if(!mergedLogs.trim().isEmpty()){
-					matchResutls.add(mergedLogs);
+					matchResutls.add(EscapeUtils.transferPipe(mergedLogs));
 				}
 			}
 			mergedBuffer.clear();

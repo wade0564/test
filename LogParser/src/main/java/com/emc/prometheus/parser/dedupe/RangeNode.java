@@ -1,11 +1,15 @@
 package com.emc.prometheus.parser.dedupe;
 
+import java.io.Serializable;
+
 
 /**
  * @author wade
  * @version Nov 12, 2014 4:13:20 PM
  */
-public class RangeNode {
+public class RangeNode implements Serializable {
+
+	private static final long serialVersionUID = -4498430020774190635L;
 
 	Long ts;
 
@@ -43,4 +47,9 @@ public class RangeNode {
 		this.index = index;
 	}
 
+	@Override
+	public String toString() {
+		return "RangeNode [ts=" + ts + ", hash=" + hash + ", index=" + index
+				+ "]";
+	}
 }

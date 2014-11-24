@@ -24,7 +24,7 @@ public class VtlInfoParserRegExInfo {
 //	public final static String Msg_Reg_Sub = "(^(?!\\s*\\d{2}/\\d{2}\\s+\\d{2}\\:\\d{2}\\:\\d{2}\\.\\d{3}\\s+\\(tid)(.*))^(?!====*)(.*)";
 //	public final static String Msg_Reg_Sub = "(^(?!((\\s*\\d{2}/\\d{2}\\s+\\d{2}\\:\\d{2}\\:\\d{2}\\.\\d{3}\\s+\\(tid))|(====)))(.*))";
 //	public final static String Msg_Reg_Sub = "(^(?!((\\s*\\d{2}/\\d{2}\\s+\\d{2}\\:\\d{2}\\:\\d{2}\\.\\d{3}\\s+\\(tid)|(====)|(GENERATED)|(WWN seed)))(.*))";
-	public final static String Msg_Reg_Sub = "(^(?!\\s*\\d{2}/\\d{2}\\s+\\d{2}\\:\\d{2}\\:\\d{2}\\.\\d{3}\\s+\\(tid|\\s*====|\\s*GENERATED|\\s*WWN seed).*)";
+	public final static String Msg_Reg_Sub = "(^(?!\\s*\\d{2}/\\d{2}\\s+\\d{2}\\:\\d{2}\\:\\d{2}\\.\\d{3}\\s+\\(tid|\\s*====|\\s*GENERATED|\\s*WWN seed|No vtl.info).*)";
 //	public final static String Msg_Reg_Sub = "(^(?!((\\s*\\d{2}/\\d{2}\\s+\\d{2}\\:\\d{2}\\:\\d{2}\\.\\d{3}\\s+\\(tid)|(====)))(.*))";
 	public final static Pattern Msg_Reg_Sub_Pattern = Pattern.compile(Msg_Reg_Sub);
 	

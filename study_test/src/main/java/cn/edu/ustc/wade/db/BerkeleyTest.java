@@ -24,13 +24,13 @@ import com.sleepycat.persist.StoreConfig;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 
-public class JEtest {
+public class BerkeleyTest {
 	
 	private static final String ENV_PATH = "c:/berkeley_db/";
 
 	public static void main(String[] args) throws Exception {
 		
-		JEtest je = new JEtest();
+		BerkeleyTest je = new BerkeleyTest();
 
 		//打开Database环境
 		Environment mydbEnv = je.testEnvironment(ENV_PATH);

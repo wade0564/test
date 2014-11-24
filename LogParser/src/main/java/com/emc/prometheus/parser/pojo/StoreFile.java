@@ -9,7 +9,11 @@ import java.io.Serializable;
  */
 public class StoreFile  implements Serializable{
 	
+	private static final long serialVersionUID = 8886060538044581896L;
+
 	File storeFile;
+	
+	String location ;
 	
 	int content; // asupid amount symptomDataCount
 	
@@ -31,7 +35,7 @@ public class StoreFile  implements Serializable{
 	}
 
 	public File getStoreFile() {
-		return storeFile;
+		return new File(location);
 	}
 
 	public void setStoreFile(File storeFile) {
@@ -60,6 +64,21 @@ public class StoreFile  implements Serializable{
 
 	public void setCurrentPos(long currentPos) {
 		this.currentPos = currentPos;
+	}
+	
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	@Override
+	public String toString() {
+		return "StoreFile [storeFile=" + storeFile.getAbsolutePath() + ", content=" + content
+				+ ", lastPos=" + lastPos + ", currentPos=" + currentPos + "]";
 	}
 
 }
