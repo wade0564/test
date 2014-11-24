@@ -30,7 +30,7 @@ public class DBUtilsTest {
 		
 		String key =LOG_TYPE.MESSAGES.toString();
 		
-		StoreFile value =  new StoreFile(new File(new Date().toString()));
+		StoreFile value =  new StoreFile(new Date().toString());
 		
 		DBUtils.update(key, value);
 		
@@ -67,8 +67,8 @@ public class DBUtilsTest {
 		String key2 ="test2";
 	
 		DBUtils.beginTransaction();
-		StoreFile value =  new StoreFile(new File("v1=="+new Date().toString()));
-		StoreFile value2 =  new StoreFile(new File("v2=="+new Date().toString()));
+		StoreFile value =  new StoreFile("v1=="+new Date().toString());
+		StoreFile value2 =  new StoreFile("v2=="+new Date().toString());
 		DBUtils.update(key, value);
 		
 		//cause exception manually

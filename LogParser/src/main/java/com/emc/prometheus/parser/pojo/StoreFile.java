@@ -10,26 +10,24 @@ import java.io.Serializable;
 public class StoreFile  implements Serializable{
 	
 	private static final long serialVersionUID = 8886060538044581896L;
-
-	File storeFile;
 	
-	String location ;
+	String location;
 	
-	int content; // asupid amount symptomDataCount
+	int symptomDataCount; // asupid amount symptomDataCount
 	
 	long lastPos;//last offset position
 	
 	long currentPos;
 	
-	public StoreFile(File storeFile) {
+	public StoreFile(String location) {
 		super();
-		this.storeFile = storeFile;
+		this.location = location;
 	}
 	
-	public StoreFile(File storeFile, int content, long lastPos, long currentPos) {
+	public StoreFile(String location, int symptomDataCount, long lastPos, long currentPos) {
 		super();
-		this.storeFile = storeFile;
-		this.content = content;
+		this.location = location;
+		this.symptomDataCount = symptomDataCount;
 		this.lastPos = lastPos;
 		this.currentPos = currentPos;
 	}
@@ -38,16 +36,12 @@ public class StoreFile  implements Serializable{
 		return new File(location);
 	}
 
-	public void setStoreFile(File storeFile) {
-		this.storeFile = storeFile;
+	public int getSymptomDataCount() {
+		return symptomDataCount;
 	}
 
-	public int getContent() {
-		return content;
-	}
-
-	public void setContent(int content) {
-		this.content = content;
+	public void setSymptomDataCount(int symptomDataCount) {
+		this.symptomDataCount = symptomDataCount;
 	}
 
 	public long getLastPos() {
@@ -77,7 +71,7 @@ public class StoreFile  implements Serializable{
 
 	@Override
 	public String toString() {
-		return "StoreFile [storeFile=" + storeFile.getAbsolutePath() + ", content=" + content
+		return "StoreFile [storeFile=" + location + ", content=" + symptomDataCount
 				+ ", lastPos=" + lastPos + ", currentPos=" + currentPos + "]";
 	}
 
