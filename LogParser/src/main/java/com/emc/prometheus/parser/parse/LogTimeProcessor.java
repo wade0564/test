@@ -13,10 +13,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.emc.prometheus.parser.dedupe.TsAndMsg;
+import com.emc.prometheus.parser.parse.exception.TimeHandlerException;
 import com.emc.prometheus.parser.parse.regex.BiosParserRegExInfo;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
 import com.emc.prometheus.parser.pojo.ParsedLogs;
+import com.emc.prometheus.parser.util.EscapeUtils;
 
 /** 
  * @author wade 
@@ -32,7 +34,7 @@ public class LogTimeProcessor {
 	private static SimpleDateFormat aliveDateFormat = new SimpleDateFormat("EEE MMM dd hh:mm:ss z yyyy");
 	
 	
-	public static Map<LOG_TYPE, List<TsAndMsg>> getTsAndMsg(LogInfo logInfo) throws Exception {
+	public static Map<LOG_TYPE, List<TsAndMsg>> getTsAndMsg(LogInfo logInfo) throws TimeHandlerException {
 
 		
 		Map<LOG_TYPE, List<TsAndMsg>>  tsAndMsgMap = new HashMap<LOG_TYPE, List<TsAndMsg>>();
@@ -51,19 +53,22 @@ public class LogTimeProcessor {
 			List<TsAndMsg> tsAndMsgList = new ArrayList<>(); 
 			List<String> msgs = parsedLogMap.get(type);
 			long[] genDateHandler =null;
-			if(type!=LOG_TYPE.BIOS){
-				//Timerhandler get Ts
-				LogTimeHandler logTimeHandler = LogTimeHandler.getTimeHandlerInstance(type);
-				String genDate=null;
-				if(!generatedDateMap.get(type).isEmpty()){
-					genDate = generatedDateMap.get(type).get(0);
+			try {
+				if(type!=LOG_TYPE.BIOS){
+					//Timerhandler get Ts
+					LogTimeHandler logTimeHandler = LogTimeHandler.getTimeHandlerInstance(type);
+					String genDate=null;
+					if(generatedDateMap!=null && !generatedDateMap.get(type).isEmpty()){
+						genDate = generatedDateMap.get(type).get(0);
+					}
+					genDateHandler = logTimeHandler.genDateHandler(genDate, epoch, msgs);
+				}else{
+					//Bios no need Timehandler
+					genDateHandler = getBiosDateHandler(msgs);
 				}
-				genDateHandler = logTimeHandler.genDateHandler(genDate, epoch, msgs);
-			}else{
-				//Bios no need Timehandler
-				genDateHandler = getBiosDateHandler(msgs);
+			} catch (Exception e) {
+				throw new TimeHandlerException("TimeHandler Error",e,logInfo);
 			}
-			
 			for (int i = 0; i < genDateHandler.length; i++) {
 				TsAndMsg tsAndMsgObj = new TsAndMsg();
 				tsAndMsgObj.setTs(genDateHandler[i]);
@@ -100,7 +105,7 @@ public class LogTimeProcessor {
 				timestamps[i]= aliveDateFormat.parse(m.group(2)).getTime();
 			}else {
 				//eg. 08/22/2011 | 19:20:52 
-				m=pipeDataPattern.matcher(msgs.get(i));
+				m=pipeDataPattern.matcher(EscapeUtils.reversePipe(msgs.get(i)));
 				if(m.find()){
 					timestamps[i]= pipeDateFormat.parse(m.group(2)).getTime();
 				}

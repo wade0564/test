@@ -20,4 +20,7 @@ public class EscapeUtils {
 	public static String transferPipe(String str) {
 		return str.replace(PIPE, PIPE_ESCAPE);
 	}
+	public static String reversePipe(String str) {
+		return str.replace(PIPE_ESCAPE,PIPE);
+	}
 }

@@ -23,6 +23,7 @@ import com.sleepycat.je.Cursor;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
+import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
@@ -118,9 +119,16 @@ public class DBUtils {
 	}
 	
 	public static void commit(){
-		transaction.commit();
-		log.info("In-Memeory DB commit");
-		transaction=null;
+		try {
+			transaction.commit();
+			log.info("In-Memeory DB commit");
+		} catch (DatabaseException e) {
+			log.error("Exception while In-memroy DB committing !!!");
+			log.error(e.getMessage(),e);
+			throw e;
+		}finally{
+			transaction=null;
+		}
 	}
 		
 	
@@ -269,7 +277,7 @@ public class DBUtils {
 	        }
 	        
 	        if(keyString.endsWith(LAST_ASUPID)){
-	        	log.info(LAST_ASUPID + ":" + classBindingMap.get(Long.class).entryToObject(foundData));
+	        	log.info("===================="+LAST_ASUPID + ":" + classBindingMap.get(Long.class).entryToObject(foundData));
 	        	continue;
 	        }
 	        

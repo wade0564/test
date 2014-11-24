@@ -2,14 +2,9 @@ package com.emc.prometheus.parser.main;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,21 +13,19 @@ import com.emc.prometheus.parser.dao.LogDao;
 import com.emc.prometheus.parser.dedupe.DedupProcessor;
 import com.emc.prometheus.parser.dedupe.Range;
 import com.emc.prometheus.parser.dedupe.TsAndMsg;
-import com.emc.prometheus.parser.parse.LogTimeHandler;
 import com.emc.prometheus.parser.parse.LogTimeProcessor;
 import com.emc.prometheus.parser.parse.Parser;
+import com.emc.prometheus.parser.parse.exception.TimeHandlerException;
 import com.emc.prometheus.parser.persist.FilePersistenceProcessor;
 import com.emc.prometheus.parser.pojo.CompositeLogInfo;
 import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
-import com.emc.prometheus.parser.pojo.ParsedLogs;
 import com.emc.prometheus.parser.util.DBUtils;
 import com.emc.prometheus.parser.util.FileUtils;
-import com.sleepycat.je.cleaner.Cleaner;
 
 @Component
-public class ParserTask implements Runnable {
+public class ParserTask{
 
 	@Autowired
 	LogDao logDao;
@@ -43,34 +36,23 @@ public class ParserTask implements Runnable {
 	
     public	CompositeLogInfo compositeLogInfo ;
 
-	@Override
-	public void run() {
+	public void run() throws Exception {
 
 		while (true) {
 			compositeLogInfo = logDao.getLogInfos();
 			// if no file to parse , task over
 			if(!compositeLogInfo.isEmpty()){
-				try {
 					process();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 		}
 	}
 
-	public void process() throws IOException {
+	public void process() throws Exception {
 		
 		List<LogInfo> logInfos = compositeLogInfo.getLogInfos();
 	
 		for (LogInfo logInfo : logInfos) {
-			try {
 				process(logInfo);
-			} catch (Exception e) {
-				//TODO handler the exception
-				e.printStackTrace();
-			}
 		}
 	}
 	
@@ -85,11 +67,9 @@ public class ParserTask implements Runnable {
 		}
 
 		for (Entry<File, LOG_FILE_TYPE> logFileEntry : logFileMap.entrySet()) {
-
 			parse(logInfo, logFileEntry);
 			// get ts and msg order by ts
 			Map<LOG_TYPE, List<TsAndMsg>> tsAndMsgMap = getTsAndMsg(logInfo);
-
 			//transaction begin
 			DBUtils.beginTransaction();
 			
@@ -111,7 +91,7 @@ public class ParserTask implements Runnable {
 		parser.parse(logInfo, logFileEntry);
 	}
 
-	private Map<LOG_TYPE, List<TsAndMsg>> getTsAndMsg(LogInfo logInfo) throws Exception {
+	private Map<LOG_TYPE, List<TsAndMsg>> getTsAndMsg(LogInfo logInfo) throws TimeHandlerException {
 		
 		Map<LOG_TYPE, List<TsAndMsg>>  tsAndMsgMap = LogTimeProcessor.getTsAndMsg(logInfo);
 		

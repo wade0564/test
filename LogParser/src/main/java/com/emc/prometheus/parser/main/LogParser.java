@@ -16,9 +16,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.emc.prometheus.parser.parse.exception.TimeHandlerException;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.StoreFile;
 import com.emc.prometheus.parser.util.DBUtils;
+import com.sleepycat.je.DatabaseException;
 
 /**
  * 
@@ -49,7 +51,7 @@ public class LogParser {
 	public static void main(String[] args) {
 		
 		ApplicationContext context =
-				new ClassPathXmlApplicationContext("app-context.xml");
+				new ClassPathXmlApplicationContext("applicationContext.xml");
 		
 	    LogParser parser =	context.getBean(LogParser.class);
 	    
@@ -63,15 +65,21 @@ public class LogParser {
 			e.printStackTrace();
 		}
 	    
-		while (true) {
-//			try {
+//		while (true) {
+			try {
 				parser.start();
 				parser.sleep();
-//			}catch(DataAccessException e){
-//				log.error(Logging.Preparser,"Exception while Processing SUB: {}", e.getMessage());
-//				log.error(e.getMessage(),e);
-//				me.sleep();
-//			}catch (Exception e) {
+			}catch(DatabaseException e){
+				log.error("Exception while Processing In-Memory DB: {}", e.getMessage());
+				log.error(e.getMessage(),e);
+				parser.sleep();
+			}catch(TimeHandlerException e){
+				log.error("Exception while Processing In-Memory DB: {}", e.getMessage());
+				log.error(e.getMessage(),e);
+				log.info("skip the asupid :{}",e.getLogInfo().getAsupId());
+				DBUtils.update(DBUtils.LAST_ASUPID, e.getLogInfo().getAsupId());
+				parser.sleep();
+			}catch (Exception e) {
 //				log.error(Logging.Preparser,"Exception while Processing SUB: {}", e.getMessage());
 //				log.error(e.getMessage(),e);
 //				me.subHandleService.shutdownNow();
@@ -79,23 +87,25 @@ public class LogParser {
 //				// ------------------------------------------------------------------------
 //				// Release Lock
 //				// ------------------------------------------------------------------------
-//				if (!me.remitLock())
-//					log.error(Logging.Preparser,"Completely Unable to release Lock");
+				if (!parser.remitLock())
+					log.error("Completely Unable to release Lock");
 //				break;
-//			}
-		}
+			}
+//		}
 	}
 	
-	private  void checkDirtyShutDown() throws IOException {
+	public void checkDirtyShutDown() throws IOException {
 		
 		Long lastAsupid = (Long) DBUtils.get(DBUtils.LAST_ASUPID, Long.class);
-		Map<LOG_TYPE, StoreFile> storeFileMap = new HashMap<LOG_TYPE, StoreFile>();
+		log.info("Last AsupId {}",lastAsupid);
+		if(lastAsupid==null)
+			return ;
+		
 		for (LOG_TYPE type: LOG_TYPE.values()) {
 		 	StoreFile storeFile = DBUtils.getStoreFile(type);
-		 	
-		 	
+		 	if(storeFile==null)
+		 		continue;
 		 	checkabnormalDir(type,lastAsupid);
-		 	
 		 	checkabnormalFile(type,storeFile,lastAsupid);
 		 	
 		}
@@ -121,7 +131,6 @@ public class LogParser {
 	private void checkabnormalDir(LOG_TYPE type,Long lastAsupId) {
 		File typeRootDir = new File(storageRootDir,type.getValue());
 		removeAbnormalFile(typeRootDir, lastAsupId);
-		
 	}
 
 	
@@ -167,7 +176,7 @@ public class LogParser {
 		return lock_released;
 	}
 	
-	public void start(){
+	public void start() throws Exception{
 		parserTask.run();
 	}
 	
