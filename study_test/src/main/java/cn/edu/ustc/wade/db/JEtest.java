@@ -26,7 +26,7 @@ import com.sleepycat.persist.model.PrimaryKey;
 
 public class JEtest {
 	
-	private static final String ENV_PATH = "c:/bdb/";
+	private static final String ENV_PATH = "D:/temp";
 
 	public static void main(String[] args) throws Exception {
 		

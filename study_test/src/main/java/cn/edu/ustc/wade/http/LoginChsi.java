@@ -2,11 +2,9 @@ package cn.edu.ustc.wade.http;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -20,45 +18,34 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
-public class LoginUstcMail {
+public class LoginChsi {
 	
 	
 	public static void main(String[] args) throws Exception, IOException {
 		
 		
 		// 默认的client类。
-		HttpClient client = new DefaultHttpClient();
+		HttpClient client = HttpClients.createDefault();  
+			
 		
-//		// 设置为get取连接的方式.
-//		HttpGet httpGet1 = new HttpGet("http://mail.ustc.edu.cn");
-//		
-//		HttpResponse httpResponse1 = client.execute(httpGet1);
-//		
-//		Header[] headers1 = httpResponse1.getAllHeaders();
-//        System.out.println("==============Response headers1===============");
-//        for (Header header : headers1) {
-//        	System.out.println(header);
-//		}
-		
-		HttpPost httpPost = new HttpPost("http://mail.ustc.edu.cn/coremail/login.jsp");
+		HttpPost httpPost = new HttpPost("https://account.chsi.com.cn/passport/login?service=http%3A%2F%2Fmy.chsi.com.cn%2Farchive%2Fj_spring_cas_security_check");
 		
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("user", "sa612296@mail.ustc.edu.cn"));
-		params.add(new BasicNameValuePair("password", "sa612296"));
-		params.add(new BasicNameValuePair("domain", "mail.ustc.edu.cn"));
-		params.add(new BasicNameValuePair("face", null));
-		params.add(new BasicNameValuePair("Submit", "(unable to decode value)"));
+		params.add(new BasicNameValuePair("username", "18326118706"));
+		params.add(new BasicNameValuePair("password", "5711667"));
+		params.add(new BasicNameValuePair("lt", "_c775006DE-3A87-5D5B-5987-A5C0A2A2DC4B_k8107F743-B7FC-13A8-13DC-C377C03111AE"));
+		params.add(new BasicNameValuePair("_eventId", "submit"));
+		params.add(new BasicNameValuePair("submit", "登  录"));
+
 		params.add(new BasicNameValuePair( ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY));
 		setHeader(httpPost);
         httpPost.setEntity(new UrlEncodedFormEntity(params));
@@ -78,24 +65,25 @@ public class LoginUstcMail {
         
         int statusCode = response.getStatusLine().getStatusCode();
         
-        if(statusCode== HttpStatus.SC_MOVED_TEMPORARILY){
-            System.out.println("==============Response header Location===============");
-            Header[] allheaders = response.getAllHeaders();
-            
-            for (Header header : allheaders) {
-				System.out.println("======="+header.getName()+"|"+header.getValue());
-			}
-        	
-            Header header = response.getFirstHeader("Location");
-        	response.getEntity().consumeContent();
-        	System.out.println(header.getValue());
-        	
-        	HttpGet httpGet2 =  new HttpGet(header.getValue());
-        	
-         HttpResponse execute = client.execute(httpGet2);
-         
-        	
-        }
+        System.out.println(statusCode);
+        
+        System.out.println( IOUtils.toString( response.getEntity().getContent()));
+        
+        
+        
+//        if(statusCode== HttpStatus.SC_MOVED_TEMPORARILY){
+//            System.out.println("==============Response header Location===============");
+//
+//        	Header header = response.getFirstHeader("Location");
+//        	response.getEntity().consumeContent();
+//        	System.out.println(header.getValue());
+//        	
+//        	HttpGet httpGet2 =  new HttpGet(header.getValue());
+//        	
+//         HttpResponse execute = client.execute(httpGet2);
+//         
+//        	
+//        }
         
         
 //        System.out.println("Response code: "+ response.getStatusLine().getStatusCode());
