@@ -189,6 +189,12 @@ public class DBUtils {
 		return (StoreFile) get(logType.toString(), StoreFile.class);
 	}
 	
+	public static Long getLastAsupId(){
+		return (Long) DBUtils.get(DBUtils.LAST_ASUPID, Long.class);
+	}
+	public static boolean incrementLastAsupId(){
+		return  DBUtils.update(DBUtils.LAST_ASUPID,getLastAsupId()+1);
+	}
 	public static List<Range> getRanges(LogInfo logInfo,LOG_TYPE type) {
 		
 		//PSNT process
@@ -246,49 +252,6 @@ public class DBUtils {
 //		database.
 //	}
 	
-	public static void printAllDataBaseEntry(){
-		
-		Cursor cursor = database.openCursor(transaction, null);
-		
-	    // Cursors need a pair of DatabaseEntry objects to operate. These hold
-	    // the key and data found at any given position in the database.
-	    DatabaseEntry foundKey = new DatabaseEntry();
-	    DatabaseEntry foundData = new DatabaseEntry();
-
-	    // To iterate, just call getNext() until the last database record has been 
-	    // read. All cursor operations return an OperationStatus, so just read 
-	    // until we no longer see OperationStatus.SUCCESS
-	    while (cursor.getNext(foundKey, foundData, LockMode.DEFAULT) ==
-	        OperationStatus.SUCCESS) {
-	        String keyString = new String(foundKey.getData());
-	        
-	        LOG_TYPE[] types = LOG_TYPE.values();
-	        int i ;
-	        for (i = 0; i < types.length; i++) {
-				LOG_TYPE type = types[i];
-				if(keyString.equals(type.toString())){
-					StoreFile storeFile = (StoreFile) classBindingMap.get(StoreFile.class).entryToObject(foundData);
-					log.info("====================KEY :{}\n{}" ,type.toString(),storeFile.toString());
-					break;
-				}
-			}
-	        if(i<types.length){
-	        	continue;
-	        }
-	        
-	        if(keyString.endsWith(LAST_ASUPID)){
-	        	log.info("===================="+LAST_ASUPID + ":" + classBindingMap.get(Long.class).entryToObject(foundData));
-	        	continue;
-	        }
-	        
-	        //Ranges
-	        List<Range> ranges =(List<Range>) classBindingMap.get(Range.class).entryToObject(foundData);
-	        for (Range range : ranges) {
-				log.info(range.toString());
-			}
-	        
-	    }
-	}
 
 	public static void delete(String key) {
 		 OperationStatus status = database.delete(null, new DatabaseEntry(key.getBytes()));

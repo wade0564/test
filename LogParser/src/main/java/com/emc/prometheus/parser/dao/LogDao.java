@@ -55,7 +55,7 @@ public class LogDao extends JdbcDaoSupport {
 		//TODO getLastAsupId
 		
 		CompositeLogInfo compositeLogInfo  = new CompositeLogInfo();
-		Long lastAsupId = (Long) DBUtils.get(DBUtils.LAST_ASUPID, Long.class);
+		Long lastAsupId = DBUtils.getLastAsupId();
 		if(lastAsupId==null){
 			lastAsupId = 1L;
 		}
@@ -63,7 +63,7 @@ public class LogDao extends JdbcDaoSupport {
 		
 		String geninfoSql = String.format("SELECT asupid, sn, epoch, chassis_sn, (CASE WHEN from_sub=TRUE THEN 'SUB' ELSE 'ASUP' END) as type, file_handler"
 										+ " FROM asup.geninfo"
-										+ " WHERE asupid >= %s %s and file_handler is not null and (from_sub=false or (from_sub=true and file_handler !~ 'autosupport')  )"
+										+ " WHERE asupid > %s %s and file_handler is not null and (from_sub=false or (from_sub=true and file_handler !~ 'autosupport')  )"
 										+ " order by asupid asc LIMIT %s"
 										,lastAsupId>minAsupId?lastAsupId:minAsupId
 										,maxAsupId==null?"":"and asupid<="+maxAsupId

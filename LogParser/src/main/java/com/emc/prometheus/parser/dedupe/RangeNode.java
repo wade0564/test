@@ -49,7 +49,7 @@ public class RangeNode implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RangeNode [ts=" + ts + ", hash=" + hash + ", index=" + index
-				+ "]";
+		return  ts +"|"+hash+"|"+String.format("%3s", index);
+//		return  ts +"|"+hash+"|"+index;
 	}
 }

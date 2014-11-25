@@ -40,7 +40,10 @@ public class Range implements Serializable {
 	public String toString() {
 		return "Range [start=" + start + ", end=" + end + "]";
 	}
-	
+
+	public String[] getData(String keyString) {
+		return new String[]{keyString,start.toString(),end.toString()};
+	}
 	
 
 }

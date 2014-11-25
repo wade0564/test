@@ -50,6 +50,10 @@ public class LogParserTest {
 				new ClassPathXmlApplicationContext("applicationContext.xml");
 
 		LogParser logParser = context.getBean(LogParser.class);
+		//old : 1-1
+		//new01	:1-1+ 
+		//new02	:1-2
+		//new03	:1-1,2-2
 		logParser.checkDirtyShutDown();
 		
 	}

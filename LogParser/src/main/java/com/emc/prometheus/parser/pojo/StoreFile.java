@@ -75,4 +75,9 @@ public class StoreFile  implements Serializable{
 				+ ", lastPos=" + lastPos + ", currentPos=" + currentPos + "]";
 	}
 
+	public String[] getData(String type) {
+		return new String[]{type,location,symptomDataCount+"",lastPos+"",currentPos+""};
+	}
+
+
 }

@@ -96,10 +96,5 @@ public class DBUtilsTest {
 		
 	}
 	
-	@Test 
-	public void printAllEntryTest(){
-		DBUtils.printAllDataBaseEntry();
-	}
-	
 
 }

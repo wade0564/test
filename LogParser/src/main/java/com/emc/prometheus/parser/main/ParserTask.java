@@ -42,7 +42,10 @@ public class ParserTask{
 			compositeLogInfo = logDao.getLogInfos();
 			// if no file to parse , task over
 			if(!compositeLogInfo.isEmpty()){
-					process();
+				process();
+				clean();
+			}else {
+				break;
 			}
 		}
 	}
@@ -80,9 +83,8 @@ public class ParserTask{
 			updateDB(logInfo);
 			//commit
 			DBUtils.commit();
-			
-			clean();
 		}
+	
 	}
 
 

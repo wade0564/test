@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.stereotype.Component;
 
@@ -110,6 +111,50 @@ public void parseBIOSSort() throws Exception{
 		}
 	}
 	
+	
+	@Test
+	public void parseMESSAGES() throws IOException{
+
+		Parser  parser = new Parser();
+		
+		LogInfo logInfo = new LogInfo();
+		
+		File bios = new File("C:/logs/messages.engineering.test");
+	
+		SimpleEntry< File, LOG_FILE_TYPE> entry = new SimpleEntry<File,LOG_FILE_TYPE>(bios,LOG_FILE_TYPE.MESSAGES_ENGINEERING);
+		parser.parse(logInfo, entry);
+		
+		ParsedLogs parsedLogs = logInfo.getParsedLogs();
+		
+		Map<LOG_TYPE, List<String>> parsedLogMap = parsedLogs.getParsedLogMap();
+		List<String> list = parsedLogMap.get(LOG_TYPE.MESSAGES);
+		for (String string : list) {
+			System.out.println(string);
+		}
+	}
+	
+	@Test
+	public void parseAsupMESSAGES() throws IOException{
+		
+		Parser  parser = new Parser();
+		
+		LogInfo logInfo = new LogInfo();
+		
+		File asup = new File("C:/tmp/asup/internal/2014/10/29/2014-11-10_21-08-20.23893");
+	
+		SimpleEntry< File, LOG_FILE_TYPE> entry = new SimpleEntry<File,LOG_FILE_TYPE>(asup,LOG_FILE_TYPE.ASUP);
+		parser.parse(logInfo, entry);
+		
+		ParsedLogs parsedLogs = logInfo.getParsedLogs();
+		
+		Map<LOG_TYPE, List<String>> parsedLogMap = parsedLogs.getParsedLogMap();
+		List<String> list = parsedLogMap.get(LOG_TYPE.MESSAGES);
+		
+		IOUtils.writeLines(list, "\n", new FileWriter(new File("C:/logs/output.log")));
+//		for (String string : list) {
+//			System.out.println(string);
+//		}
+	}
 	@Test
 	public void parseAsup() throws IOException{
 		

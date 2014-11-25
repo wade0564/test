@@ -193,7 +193,7 @@ public class FilePersistenceProcessor {
 			this.newlyCreatedLogDirectory = f;
 			return f;
 		}else{
-			return null;
+			throw new IOException();
 		}
 	}
 	
