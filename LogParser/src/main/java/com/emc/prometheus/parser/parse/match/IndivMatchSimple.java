@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.emc.prometheus.parser.util.EscapeUtils;
+
 /** 
 * @author wade 
 * @version Nov 11, 2014 8:04:28 PM 
@@ -11,15 +13,17 @@ import java.util.regex.Pattern;
 
 public class IndivMatchSimple implements Match {
 	
-	private Pattern reg;
+	protected Pattern reg;
 	
-	private List<String> matchResutls;
+	protected List<String> matchResutls;
 	
 	private MatchState state = MatchState.NOT_STARTED;
 	
 	private boolean consumeTarget;
 	
-	String name;
+	private boolean repeating;
+	
+	protected String name;
 
 	public String getName() {
 		return name;
@@ -29,6 +33,9 @@ public class IndivMatchSimple implements Match {
 		this.name = name;
 	}
 
+	public IndivMatchSimple() {
+		
+	}
 	public IndivMatchSimple(String name,Pattern reg) {
 		this.name = name;
 		this.reg = reg;
@@ -48,7 +55,15 @@ public class IndivMatchSimple implements Match {
 	public Pattern getReg() {
 		return reg;
 	}
+	
+	@Override
+	public boolean getRepeating() {
+		return repeating;
+	}
 
+	public void setRepeating(boolean repeating) {
+		this.repeating = repeating;
+	}
 
 	@Override
 	public void match(String target) {
@@ -56,22 +71,17 @@ public class IndivMatchSimple implements Match {
 		assert target!=null;
 		Matcher matcher = reg.matcher(target);
 		
-		
 		//TODO maybe there more group 
 		if(matcher.find()){
 			//section end need not store
 			if(matchResutls!=null){
-				matchResutls.add(matcher.group(1));
+				matchResutls.add(EscapeUtils.transferPipe(matcher.group(1)));
 			}
-			
 			this.setMatchState(MatchState.SUCCESS);
-			
 		}else {
 			//if the individual match not matched ,finished 
 			this.setMatchState(MatchState.FAIL);
 		}
-		
-		
 	}
 
 	public void setMatchResutls(List<String> matchResutls) {
@@ -103,5 +113,6 @@ public class IndivMatchSimple implements Match {
 	public void setConsumeTarget(boolean b) {
 		this.consumeTarget= b;
 	}
+
 	
 } 

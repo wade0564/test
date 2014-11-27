@@ -23,10 +23,12 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.emc.prometheus.parser.dedupe.Range;
 import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
 import com.emc.prometheus.parser.pojo.CompositeLogInfo;
+import com.emc.prometheus.parser.util.DBUtils;
 import com.google.common.base.Joiner;
 
 @Component
@@ -53,13 +55,15 @@ public class LogDao extends JdbcDaoSupport {
 		//TODO getLastAsupId
 		
 		CompositeLogInfo compositeLogInfo  = new CompositeLogInfo();
-		
-		DB db ;
-		Long lastAsupId = 1L;
+		Long lastAsupId = DBUtils.getLastAsupId();
+		if(lastAsupId==null){
+			lastAsupId = 1L;
+		}
+		log.debug("Fetch last asupid : {}",lastAsupId);
 		
 		String geninfoSql = String.format("SELECT asupid, sn, epoch, chassis_sn, (CASE WHEN from_sub=TRUE THEN 'SUB' ELSE 'ASUP' END) as type, file_handler"
 										+ " FROM asup.geninfo"
-										+ " WHERE asupid >= %s %s and file_handler is not null and (from_sub=false or (from_sub=true and file_handler !~ 'autosupport')  )"
+										+ " WHERE asupid > %s %s and file_handler is not null and (from_sub=false or (from_sub=true and file_handler !~ 'autosupport')  )"
 										+ " order by asupid asc LIMIT %s"
 										,lastAsupId>minAsupId?lastAsupId:minAsupId
 										,maxAsupId==null?"":"and asupid<="+maxAsupId
@@ -78,7 +82,7 @@ public class LogDao extends JdbcDaoSupport {
 						LogInfo logInfo = new LogInfo();
 						logInfo.setAsupId(rs.getLong("asupid"));
 						logInfo.setSn(rs.getString("sn"));
-						logInfo.setEpoch(rs.getLong("epoch"));
+						logInfo.setEpoch(rs.getLong("epoch")*1000);
 						logInfo.setChassis_sn(rs.getString("chassis_sn"));
 						logInfo.setType(LOG_FILE_TYPE.valueOf(rs.getString("type")));
 						logInfo.setFile_handler(rs.getString("file_handler"));
@@ -97,8 +101,8 @@ public class LogDao extends JdbcDaoSupport {
 			//filter the ddfs.info
 			String subContentSql = String.format("SELECT subid , (CASE WHEN asupid IS NULL THEN subid ELSE asupid END) AS asupid, path AS file_handler "
 													+ "FROM asup.sub_content "
-													+ "WHERE subid in(%s) and path !~ 'ddfs.info' "
-													+ "ORDER BY asupid"
+													+ "WHERE subid in(%s) and path !~ 'ddfs.info' and status='PARSE_SUCCESS' "
+													+ "ORDER BY asupid,file_handler"
 													, Joiner.on(",").join(subids));
 			
 			log.debug("SubContent SQL: {}",subContentSql);
@@ -135,5 +139,17 @@ public class LogDao extends JdbcDaoSupport {
 
 		}
 		return compositeLogInfo;
+	}
+
+
+
+
+	public List<Range> getExistedRanges(String sn) {
+		List<Range> ranges = (List<Range>) DBUtils.get(sn, Range.class);
+
+		if (ranges == null) {
+			ranges = new ArrayList<>();
+		}
+		return ranges;
 	}
 }

@@ -1,48 +1,47 @@
 package com.emc.prometheus.parser.pojo;
 
 import java.io.File;
+import java.io.Serializable;
 
 /** 
  * @author wade 
  * @version Nov 18, 2014 10:31:40 AM 
  */
-public class StoreFile {
+public class StoreFile  implements Serializable{
 	
-	File storeFile;
+	private static final long serialVersionUID = 8886060538044581896L;
 	
-	int content;
+	String location;
 	
-	long lastPos;//last line position
+	int symptomDataCount; // asupid amount symptomDataCount
+	
+	long lastPos;//last offset position
 	
 	long currentPos;
 	
-	public StoreFile(File storeFile) {
+	public StoreFile(String location) {
 		super();
-		this.storeFile = storeFile;
+		this.location = location;
 	}
 	
-	public StoreFile(File storeFile, int content, long lastPos, long currentPos) {
+	public StoreFile(String location, int symptomDataCount, long lastPos, long currentPos) {
 		super();
-		this.storeFile = storeFile;
-		this.content = content;
+		this.location = location;
+		this.symptomDataCount = symptomDataCount;
 		this.lastPos = lastPos;
 		this.currentPos = currentPos;
 	}
 
 	public File getStoreFile() {
-		return storeFile;
+		return new File(location);
 	}
 
-	public void setStoreFile(File storeFile) {
-		this.storeFile = storeFile;
+	public int getSymptomDataCount() {
+		return symptomDataCount;
 	}
 
-	public int getContent() {
-		return content;
-	}
-
-	public void setContent(int content) {
-		this.content = content;
+	public void setSymptomDataCount(int symptomDataCount) {
+		this.symptomDataCount = symptomDataCount;
 	}
 
 	public long getLastPos() {
@@ -60,5 +59,25 @@ public class StoreFile {
 	public void setCurrentPos(long currentPos) {
 		this.currentPos = currentPos;
 	}
+	
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	@Override
+	public String toString() {
+		return "StoreFile [storeFile=" + location + ", content=" + symptomDataCount
+				+ ", lastPos=" + lastPos + ", currentPos=" + currentPos + "]";
+	}
+
+	public String[] getData(String type) {
+		return new String[]{type,location,symptomDataCount+"",lastPos+"",currentPos+""};
+	}
+
 
 }

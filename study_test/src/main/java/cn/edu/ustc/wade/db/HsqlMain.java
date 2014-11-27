@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class Main {
+public class HsqlMain {
 
 	public static void main(String[] args) {
 		try {

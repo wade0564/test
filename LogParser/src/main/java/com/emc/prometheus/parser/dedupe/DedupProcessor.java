@@ -1,6 +1,7 @@
 package com.emc.prometheus.parser.dedupe;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +14,12 @@ public class DedupProcessor {
 	// core function dedup
 	public static void dedup(List<Range> existedLogs, List<TsAndMsg> newLogFrags){
 		
-		if (existedLogs == null || existedLogs.size() == 0) {
+		//existedLosgs can't be null
+		if (existedLogs.size() == 0) {
+			RangeNode start = getNewMsgRangeNodeStart(newLogFrags);
+			RangeNode end = getNewMsgRangeNodeEnd(newLogFrags);
+			Range range = new Range(start, end);
+			existedLogs.add(range);
 			return;
 		}
 		

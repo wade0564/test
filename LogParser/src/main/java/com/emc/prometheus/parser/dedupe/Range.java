@@ -1,11 +1,15 @@
 package com.emc.prometheus.parser.dedupe;
 
+import java.io.Serializable;
+
 
 /**
  * @author wade
  * @version Nov 12, 2014 4:41:03 PM
  */
-public class Range {
+public class Range implements Serializable {
+
+	private static final long serialVersionUID = 7491964789055213027L;
 
 	RangeNode start;
 
@@ -31,5 +35,15 @@ public class Range {
 	public void setEnd(RangeNode end) {
 		this.end = end;
 	}
+
+	@Override
+	public String toString() {
+		return "Range [start=" + start + ", end=" + end + "]";
+	}
+
+	public String[] getData(String keyString) {
+		return new String[]{keyString,start.toString(),end.toString()};
+	}
+	
 
 }

@@ -1,6 +1,5 @@
 package com.emc.prometheus.parser.pojo;
 
-import com.emc.prometheus.parser.parse.ParsedLogs;
 
 public class LogInfo {
 

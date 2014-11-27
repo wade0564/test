@@ -10,18 +10,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.emc.prometheus.parser.dao.DB;
 import com.emc.prometheus.parser.dedupe.TsAndMsg;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
 import com.emc.prometheus.parser.pojo.StoreFile;
+import com.emc.prometheus.parser.util.DBUtils;
 
 @Component
 public class FilePersistenceProcessor {
 
 	private @Value("${LOGFILE.ASUPID.CAPACITY}") Integer asupIdCapacity;
 	
-	private @Value("${LOGFILE.ROOT}") String rootDirectory;
+	private @Value("${LOGFILE.STORAGE.ROOT}") String rootDirectory;
 	
 	private @Value("${LOGFILE.FOLDER.SIZE}") Integer folderSize;
 	
@@ -45,25 +45,30 @@ public class FilePersistenceProcessor {
 	}
 	
 
-	private StoreFile getFile(LogInfo logInfo, LOG_TYPE logType) throws IOException {
+	private StoreFile getFile(LogInfo logInfo, LOG_TYPE logType) throws Exception {
 
 		StoreFile storeFile = null;
-		File logTypeDirectory = new File(rootDirectory + logType.getValue());
+		File logTypeDirectory = new File(rootDirectory , logType.getValue());
 		File logDirectory = null;
 		
 		//check if log type directory exists
 		if(logTypeDirectory.exists()){
-			storeFile = DB.getStoreFile(logType);
+			storeFile = DBUtils.getStoreFile(logType);
+			
+			if(storeFile == null){
+				logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
+				return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
+			}
 			//get storeFile's directory, see if exceeds LOGFILE.FOLDER.SIZE
-			int size = getCurrentFolderSize(new File(storeFile.getStoreFile().getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\'))));
+			int size = getCurrentFolderSize(new File(storeFile.getLocation().substring(0, storeFile.getLocation().lastIndexOf('\\'))));
 			if(size > folderSize){
 				logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
 				return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
 			}else{
 				//get files content, see if exceeds asupIdCapacity
-				int content = storeFile.getContent();
+				int content = storeFile.getSymptomDataCount();
 				if(content >= asupIdCapacity && size < folderSize){
-					logDirectory = new File(storeFile.getStoreFile().getAbsolutePath().substring(0, storeFile.getStoreFile().getAbsolutePath().lastIndexOf('\\')));
+					logDirectory = new File(storeFile.getLocation().substring(0, storeFile.getLocation().lastIndexOf('\\')));
 					return new StoreFile(createNewStoreFile(logInfo, logDirectory.getAbsolutePath(), logType));
 				}else if(content >= asupIdCapacity && size == folderSize){
 					logDirectory = createNewDirectory(logInfo, logTypeDirectory.getAbsolutePath(), logType);
@@ -123,7 +128,7 @@ public class FilePersistenceProcessor {
 				String firstAsupId = file.getName().substring(0, file.getName().indexOf('-'));
 				String newFileLocation = preFileLocation.substring(0, preFileLocation.lastIndexOf('\\'));
 				
-				newFile = new File(newFileLocation + "\\" + firstAsupId + "-" + logInfo.getAsupId() + "." + logType.getValue());
+				newFile = new File(newFileLocation + "\\" + firstAsupId + "-" + logInfo.getAsupId());
 				file.renameTo(newFile);
 				break;
 			}catch(Exception e){
@@ -136,7 +141,7 @@ public class FilePersistenceProcessor {
 			}
 		}
 		
-		return new StoreFile(newFile, fileToBeWritten.getContent(), fileToBeWritten.getLastPos(), fileToBeWritten.getCurrentPos());
+		return new StoreFile(newFile.getAbsolutePath(), fileToBeWritten.getSymptomDataCount(), fileToBeWritten.getLastPos(), fileToBeWritten.getCurrentPos());
 	}
 	
 	
@@ -177,9 +182,9 @@ public class FilePersistenceProcessor {
 		// the last line position in stored file
 		// any else ?
 		fileToBeWritten.setLastPos(fileToBeWritten.getCurrentPos());
-		fileToBeWritten.setContent(fileToBeWritten.getContent() + 1);
+		fileToBeWritten.setSymptomDataCount(fileToBeWritten.getSymptomDataCount() + 1);
 		System.out.println(fileToBeWritten.getCurrentPos());
-		DB.update(logType, fileToBeWritten);
+		DBUtils.update(logType, fileToBeWritten);
 	}
 	
 	private File createNewDirectory(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
@@ -188,15 +193,15 @@ public class FilePersistenceProcessor {
 			this.newlyCreatedLogDirectory = f;
 			return f;
 		}else{
-			return null;
+			throw new IOException();
 		}
 	}
 	
-	private File createNewStoreFile(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
-		File f = new File(directory, logInfo.getAsupId() + "-" + logInfo.getAsupId() + "." + logType.getValue());
+	private String createNewStoreFile(LogInfo logInfo, String directory, LOG_TYPE logType) throws IOException{
+		File f = new File(directory, logInfo.getAsupId() + "-" + logInfo.getAsupId());
 		if(f.createNewFile()){
 			this.newlyCreatedStoreFile = f;
-			return f;
+			return f.getAbsolutePath();
 		}else{
 			return null;
 		}

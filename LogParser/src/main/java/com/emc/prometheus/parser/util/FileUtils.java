@@ -3,6 +3,7 @@ package com.emc.prometheus.parser.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,13 +27,6 @@ public class FileUtils {
 	final static Logger log = LoggerFactory.getLogger(FileUtils.class);
 	final static String GZ = ".gz";
 	final static String SUBFILE_SUFFIX="tar.gz|tgz";
-//	final static String CUSTOMER_EMAILS_DIR = "emails/";
-//	final static String CUSTOMER_ALERTS_DIR = "alerts/";
-//	final static String SOURCE_INTERNAL_EMAILS_DIR = "internal/";
-//	final static String SOURCE_INTERNAL_ALERTS_DIR = "internal/";
-//	final static String DEST_INTERNAL_EMAILS_DIR = "internal/emails/";
-//	final static String DEST_INTERNAL_ALERTS_DIR = "internal/alerts/";
-//	
 	public static final ImmutableList<String> asupSubDirectory = ImmutableList.of("emails/", "alerts/", "internal/", "internal/", "internal/emails/", "internal/alerts/");
 
 	static String ASUP_LOG_ROOT_DIRECTORY ;
@@ -53,7 +47,7 @@ public class FileUtils {
 
 	public static Map<File, LOG_FILE_TYPE> getAsupLogFileMap(LogInfo logInfo) {
 		
-		Map<File, LOG_FILE_TYPE>  logFileMap = new HashMap<File, LOG_FILE_TYPE>();
+		Map<File, LOG_FILE_TYPE>  logFileMap = new LinkedHashMap<File, LOG_FILE_TYPE>();
 		
 		File asupFile = getAsupFile(logInfo.getFile_handler());
 		
@@ -70,10 +64,11 @@ public class FileUtils {
 		for (String subDir : asupSubDirectory) {
 			File dir = new File(ASUP_LOG_ROOT_DIRECTORY, subDir);
 			asup = new File(dir, file_handler + GZ);
-			log.debug("asup file location : {}",asup);
 			if (asup.exists()) {
+				log.debug("asup file is found location : {}",asup.getAbsoluteFile());
 				break;
 			} else {
+				log.debug("asup file not found location : {}",asup.getAbsoluteFile());
 				asup = null;
 			}
 		}
@@ -81,7 +76,7 @@ public class FileUtils {
 	}
 
 	public static Map<File, LOG_FILE_TYPE> getSubLogFileMap(LogInfo subInfo, List<LogInfo> subContentLogInfos) {
-		Map<File, LOG_FILE_TYPE>  logFileMap = new HashMap<File, LOG_FILE_TYPE>();
+		Map<File, LOG_FILE_TYPE>  logFileMap = new LinkedHashMap<File, LOG_FILE_TYPE>();
 		
 		String subFileLocation = subInfo.getFile_handler();
 		

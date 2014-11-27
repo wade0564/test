@@ -11,68 +11,56 @@ import org.springframework.stereotype.Component;
 
 import com.emc.prometheus.parser.dao.LogDao;
 import com.emc.prometheus.parser.dedupe.DedupProcessor;
+import com.emc.prometheus.parser.dedupe.Range;
 import com.emc.prometheus.parser.dedupe.TsAndMsg;
+import com.emc.prometheus.parser.parse.LogTimeProcessor;
 import com.emc.prometheus.parser.parse.Parser;
+import com.emc.prometheus.parser.parse.exception.TimeHandlerException;
 import com.emc.prometheus.parser.persist.FilePersistenceProcessor;
 import com.emc.prometheus.parser.pojo.CompositeLogInfo;
 import com.emc.prometheus.parser.pojo.LOG_FILE_TYPE;
 import com.emc.prometheus.parser.pojo.LOG_TYPE;
 import com.emc.prometheus.parser.pojo.LogInfo;
+import com.emc.prometheus.parser.util.DBUtils;
 import com.emc.prometheus.parser.util.FileUtils;
 
 @Component
-public class ParserTask implements Runnable {
+public class ParserTask{
 
 	@Autowired
 	LogDao logDao;
-	
 	@Autowired
 	Parser parser;
-
-	@Autowired
-	DedupProcessor dedupProcessor;
-	
 	@Autowired
 	FilePersistenceProcessor filePersistenceProcessor;
 	
-	CompositeLogInfo compositeLogInfo ;
+    public	CompositeLogInfo compositeLogInfo ;
 
-	@Override
-	public void run() {
+	public void run() throws Exception {
 
 		while (true) {
-
 			compositeLogInfo = logDao.getLogInfos();
-			
 			// if no file to parse , task over
 			if(!compositeLogInfo.isEmpty()){
-				try {
-					process();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				process();
+				clean();
+			}else {
+				break;
 			}
-
 		}
 	}
 
-	private void process() throws IOException {
+	public void process() throws Exception {
 		
 		List<LogInfo> logInfos = compositeLogInfo.getLogInfos();
 	
 		for (LogInfo logInfo : logInfos) {
-			try {
 				process(logInfo);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
-				
 	}
 	
-	
-	private void process(LogInfo logInfo) throws IOException {
+	//TODO convert to private after been tested
+	public void process(LogInfo logInfo) throws Exception {
 		
 		Map<File, LOG_FILE_TYPE> logFileMap = null;
 		if(logInfo.getType()==LOG_FILE_TYPE.ASUP){
@@ -82,45 +70,71 @@ public class ParserTask implements Runnable {
 		}
 
 		for (Entry<File, LOG_FILE_TYPE> logFileEntry : logFileMap.entrySet()) {
-
 			parse(logInfo, logFileEntry);
 			// get ts and msg order by ts
 			Map<LOG_TYPE, List<TsAndMsg>> tsAndMsgMap = getTsAndMsg(logInfo);
-
+			//transaction begin
+			DBUtils.beginTransaction();
+			
 			dedupe(logInfo, tsAndMsgMap);
 
 			persist(logInfo, tsAndMsgMap);
-
+			
+			updateDB(logInfo);
+			//commit
+			DBUtils.commit();
 		}
+	
 	}
 
-	private Map<LOG_TYPE, List<TsAndMsg>> getTsAndMsg(LogInfo logInfo) {
-		
-		//Timerhandler get Ts
-		
-		return null;
-	}
+
 
 	private void parse(LogInfo logInfo, Entry<File, LOG_FILE_TYPE> logFileEntry) throws IOException {
 		parser.parse(logInfo, logFileEntry);
+	}
+
+	private Map<LOG_TYPE, List<TsAndMsg>> getTsAndMsg(LogInfo logInfo) throws TimeHandlerException {
 		
-	}
-
-	private List<LogInfo> getLogInfo() {
-
-		return null;
-
-	}
-
-	private void persist(LogInfo logInfo, Map<LOG_TYPE, List<TsAndMsg>> tsAndMsgMap) {
-		// TODO Auto-generated method stub
-
+		Map<LOG_TYPE, List<TsAndMsg>>  tsAndMsgMap = LogTimeProcessor.getTsAndMsg(logInfo);
+		
+		return tsAndMsgMap;
 	}
 
 	private void dedupe(LogInfo logInfo, Map<LOG_TYPE, List<TsAndMsg>> tsAndMsgMap) {
 		
+		for (Entry<LOG_TYPE, List<TsAndMsg>> entry : tsAndMsgMap.entrySet()) {
+			if(entry.getValue().isEmpty()){
+				continue;
+			}
+			
+			String snKey = logInfo.getSn()+"_"+entry.getKey().toString();
+			List<Range> ranges = logDao.getExistedRanges(snKey);
+			DedupProcessor.dedup(ranges, entry.getValue());
+			//update
+			DBUtils.update(snKey, ranges,Range.class);
+		}
+		
+	}
+	
+	private void persist(LogInfo logInfo, Map<LOG_TYPE, List<TsAndMsg>> tsAndMsgMap) throws Exception {
+		for (Entry<LOG_TYPE, List<TsAndMsg>> entry : tsAndMsgMap.entrySet()) {
+			if(entry.getValue().isEmpty()){
+				continue;
+			}
+			filePersistenceProcessor.persist(logInfo, entry.getKey(), entry.getValue());
+		}
 
 	}
-
-
+	
+	private void updateDB(LogInfo logInfo) {
+		//update asupid
+		DBUtils.update(DBUtils.LAST_ASUPID, logInfo.getAsupId());
+	}
+	
+	private void clean() {
+		
+		compositeLogInfo = null;
+		
+	}
 }
+
