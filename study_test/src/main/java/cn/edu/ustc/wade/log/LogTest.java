@@ -13,7 +13,10 @@ public class LogTest {
 		
 		Logger log =LoggerFactory.getLogger(LogTest.class);
 		
-		log.warn("This is wade first Log");
+		for (int i =0 ;i<50000;i++) {
+			log.warn(i+"This is wade first Log");
+		}
+		
 		
 //		try {
 //			throw new  IOException("wade");
