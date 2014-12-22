@@ -1,7 +1,6 @@
 package cn.edu.ustc.wade.log;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -14,7 +13,8 @@ public class LogTest {
 		Logger log =LoggerFactory.getLogger(LogTest.class);
 		
 		for (int i =0 ;i<50000;i++) {
-			log.warn(i+"This is wade first Log");
+			System.out.println(i);
+			log.debug(i+"  This is wade first Log");
 		}
 		
 		
