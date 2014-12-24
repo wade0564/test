@@ -2,7 +2,7 @@ package cn.edu.ustc.jcip;
 
 import java.util.concurrent.*;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
-import static net.jcip.examples.LaunderThrowable.launderThrowable;
+import static cn.edu.ustc.jcip.LaunderThrowable.launderThrowable;
 
 /**
  * TimedRun2
