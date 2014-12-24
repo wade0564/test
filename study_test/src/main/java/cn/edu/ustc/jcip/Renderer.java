@@ -2,7 +2,7 @@ package cn.edu.ustc.jcip;
 
 import java.util.*;
 import java.util.concurrent.*;
-import static net.jcip.examples.LaunderThrowable.launderThrowable;
+import static cn.edu.ustc.jcip.LaunderThrowable.launderThrowable;
 
 /**
  * Renderer
