@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 public class AnotationTest {
 	
 	@Wade(vlaue="smart")
-	private String nature;
+	public String nature;
 	
 	
 	public static void main(String[] args) throws NoSuchFieldException, SecurityException {
